@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using BL.Modelos;
+using EL.DTO;
+using System.Net;
+using System.Threading.Tasks;
+using PL.Models;
+using System.Configuration;
+using ClosedXML.Excel;
+using System.IO;
+using System.Text;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Drawing;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class SedeController : Controller
+    {
+        // GET: Sede
+        public MSede modelo { get; set; }
+
+        public SedeController()
+        {
+            modelo = new MSede();
+        }
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        
+        [HttpPost]
+        public JsonResult Buscar(DTOSede sede)
+        {
+            List<DTOSede> sedes = new List<DTOSede>();
+            try
+            {
+                sedes = modelo.Buscar(sede);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = sedes };
+        }
+
+
+        public JsonResult BuscarSedes(DTOSede sede)
+        {
+            List<DTOSede> sedes = new List<DTOSede>();
+            try
+            {
+                sedes = modelo.Buscar(sede);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = sedes };
+        }
+
+    }
+}

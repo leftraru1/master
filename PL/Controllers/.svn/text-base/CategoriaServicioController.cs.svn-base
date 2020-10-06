@@ -1,0 +1,204 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Mvc;
+using BL.Modelos;
+using EL.DTO;
+using System.Net;
+using System.Threading.Tasks;
+using PL.Models;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class CategoriaServicioController : Controller
+    {
+        private MTipoServicio MTipoServicio = new MTipoServicio();
+        DTOSessionUsuario usuario = (DTOSessionUsuario)MSession.ReturnSessionObject();
+
+        // GET: CategoriaServicio
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        // GET: CategoriaServicio/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: CategoriaServicio/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: CategoriaServicio/Create
+        [HttpPost]
+        public ActionResult Create(FormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: CategoriaServicio/Edit/5
+        public ActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        // POST: CategoriaServicio/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: CategoriaServicio/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: CategoriaServicio/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public JsonResult BuscarTodas()
+        {
+            List<DTOTipoServicio> tiposServicio = new List<DTOTipoServicio>();
+            try
+            {
+                tiposServicio = MTipoServicio.ObtenerTodos();
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message;
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = tiposServicio };
+
+        }
+        [HttpPost]
+        public JsonResult Buscar(DTOTipoServicio tipoServicio)
+        {
+            List<DTOTipoServicio> tiposServicio = new List<DTOTipoServicio>();
+            try
+            {
+                tiposServicio = MTipoServicio.Buscar(tipoServicio);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = tiposServicio };
+        }
+        [HttpPost]
+        public async Task<JsonResult> Guardar(DTOTipoServicio tipoServicio)
+        {
+            try
+            {
+                DTOTipoServicio dtoTipoServicio = new DTOTipoServicio();
+
+                if (usuario == null) {
+                    throw new NullReferenceException("No se puede guardar el registro. Su sesión ha finalizado.");
+                }
+
+                dtoTipoServicio.TIP_ID_TIPO_SERVICIO = tipoServicio.TIP_ID_TIPO_SERVICIO;
+                dtoTipoServicio.TIP_NOMBRE = tipoServicio.TIP_NOMBRE;
+                dtoTipoServicio.TIP_VIGENTE = tipoServicio.TIP_VIGENTE;
+                dtoTipoServicio.TIP_FECHA_CREACION = DateTime.Now;
+                dtoTipoServicio.TIP_FECHA_ACTUALIZACION = DateTime.Now;
+                dtoTipoServicio.TIP_USU_ID_USUARIO = usuario.Usuario.USU_ID_USUARIO;
+
+                tipoServicio = await MTipoServicio.Guardar(dtoTipoServicio);
+            }
+            catch(Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                if (usuario == null) {
+                    Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                }
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = tipoServicio };
+        }
+
+        public JsonResult BuscarId(int id)
+        {
+            DTOTipoServicio tipoServicio = new DTOTipoServicio();
+            try
+            {
+                tipoServicio = MTipoServicio.BuscarId(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = tipoServicio };
+        }
+
+        [HttpDelete]
+        public async Task<JsonResult> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                if (MTipoServicio.IsDeleted(id))
+                {
+                    await MTipoServicio.Eliminar(id);
+                    respuesta.Mensaje = "Registro eliminado con éxito.";
+                    respuesta.Resultado = true;
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else {
+                    respuesta.Mensaje = "Registro no pudo ser eliminado, tiene dependencias con servicios.";
+                    respuesta.Resultado = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+            //return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new object[] { new object() } };
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+    }
+}

@@ -1,0 +1,13 @@
+﻿@model EL.DTO.DTOFileModel
+    <div id="content">
+        <div id="pnlBusqueda" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            @Html.Partial("Upload_Form", Model)
+        </div>
+    </div>
+
+    @section scripts{
+        @Scripts.Render("~/js/upload")
+    }
+    @section pie{
+        <div class="cod-pantalla">LAB-F0004 v(1.0.0)</div>
+    }

@@ -1,0 +1,21 @@
+﻿.logoPDF {
+    width: 10%;
+}
+
+#tbDatosPersonales {
+    width: 300px;
+    display: inline;
+    margin-left: 100px;
+}
+
+#tbTitulo {
+    height: 65px;
+    width: 100%;
+    border-bottom: 1px solid #B5B2B2;
+    display: inline;
+    position: relative;
+}
+
+#tbTitulo tr {
+    border-bottom: 1px solid #B5B2B2;
+}

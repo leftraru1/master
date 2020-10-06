@@ -1,0 +1,58 @@
+﻿<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-building"></i> Edificios <span> > Registro</span></h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form id="FormTrabajador">
+            <input id="hdIdEdificio" type="hidden" />
+            <input id="hdDataEdificio" type="hidden" />
+            <input id="hdDataSession" type="hidden" />
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label " for="txtNombreEdificio">Nombre edificio</label>
+                        <input type="text" id="txtNombreEdificio" name="txtNombreEdificio" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="100">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Sede</label>
+                        <select id="cmbSede" name="cmbSede" class="form-control input-sm"></select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label ">Vigente</label>
+                        <div class="boton-switch">
+                            <input id="chkVigente" name="chkVigente" type="checkbox" class="switchery habilitadoModifica" data-theme="blue" checked disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-footer clearfix">
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-md-offset-6">
+                <button id="btnGuardar" type="button" name="btnGuardar" class="btn btn-round btn-sm btn-primary btn-block habilitadoModifica">
+                    <i class="glyphicon glyphicon-save"></i>
+                    Guardar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnLimpiar" type="button" class="btn btn-sm btn-block btn-round btn-primary habilitadoModifica">
+                    <i class="fa fa-lg fa-fw fa-recycle"></i>
+                    Limpiar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnVolver" type="button" name="btnVolver" class="btn btn-round btn-sm btn-danger btn-block ">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

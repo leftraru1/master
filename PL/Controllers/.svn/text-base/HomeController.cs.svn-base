@@ -1,0 +1,62 @@
+﻿using BL.Modelos;
+using EL.DTO;
+using PL.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class HomeController : Controller
+    {
+        //private MNoticia modelo = new MNoticia();
+        
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Detalle(int? id)
+        {
+
+            //if (id != null)
+            //{
+
+            //    DTONoticia not = new DTONoticia();
+            //    not.NOT_ID = (int)id;
+
+            //    not = modelo.BuscarPorId(not);
+            //    return View(not);
+
+            //}
+
+            return View();
+        }
+
+        //[HttpPost]
+        //public JsonResult cargaNoticias(DTONoticia not, int pagina)
+        //{
+        //    List<DTONoticia> noticias = new List<DTONoticia>();
+        //    try
+        //    {
+        //        noticias = modelo.cargarNoticiasTipo(not, pagina);
+        //        foreach (DTONoticia item in noticias)
+        //            if (!string.IsNullOrWhiteSpace(item.NOT_RUTA))
+        //                item.NOT_RUTA = Url.Action("ImageStream", "Documento", new { archivo = item.NOT_RUTA + "." + item.NOT_EXT });
+        //        Response.StatusCode = (int)HttpStatusCode.OK;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        //        Response.StatusDescription = ex.ToString();
+        //    }
+
+        //    return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = noticias };
+
+        //}
+    }
+}

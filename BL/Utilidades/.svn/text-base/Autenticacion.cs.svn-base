@@ -1,0 +1,22 @@
+﻿using EL.DTO;
+using BL.Modelos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BL.Utilidades
+{
+    public class Autenticacion
+    {
+
+        private MUsuario modelo = new MUsuario();
+
+        //public DTORespuesta Login(DTOLogin login)
+        //{
+        //    return modelo.Buscar(login);
+        //}
+
+    }
+}

@@ -1,0 +1,134 @@
+﻿using AutoMapper;
+using DAL;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace BL.Modelos
+{
+    public class MEdificio
+    {
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MEdificio()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public List<DTOEdificio> ObtenerTodos()
+        {
+            List<DTOEdificio> edificios = new List<DTOEdificio>();
+            List<Edificio> datos = unitOfWork.EdificioRepo.GetAll(x => (x.EDI_ID_EDIFICIO > 0), includeProperties: "Sede").ToList();
+
+            DTOSessionUsuario sess = (DTOSessionUsuario)MSession.ReturnSessionObject();
+            if (sess.Usuario.Perfil.PERF_ADMINISTRADOR == false)
+                datos = datos.FindAll(x => x.EDI_SED_ID_SEDE == sess.Usuario.USU_SED_ID_SEDE);
+
+            mapper.Map<List<Edificio>, List<DTOEdificio>>(datos, edificios);
+
+            return edificios;
+        }
+
+        public List<DTOEdificio> Buscar(DTOEdificio filtro)
+        {
+            List<DTOEdificio> edificios = new List<DTOEdificio>();
+            List<Edificio> datos = unitOfWork.EdificioRepo.GetAll(x => (x.EDI_ID_EDIFICIO == filtro.EDI_ID_EDIFICIO || filtro.EDI_ID_EDIFICIO == 0)
+                                                                    && (x.EDI_NOMBRE.Contains(filtro.EDI_NOMBRE) == true || filtro.EDI_NOMBRE == null)
+                                                                    && (x.EDI_SED_ID_SEDE == filtro.EDI_SED_ID_SEDE || filtro.EDI_SED_ID_SEDE == 0)
+                                                                    && (x.EDI_VIGENTE == filtro.EDI_VIGENTE || filtro.EDI_VIGENTE == null)
+                                                                    , includeProperties: "Sede"
+                                                                  ).ToList();
+
+            DTOSessionUsuario sess = (DTOSessionUsuario)MSession.ReturnSessionObject();
+            if (sess.Usuario.Perfil.PERF_ADMINISTRADOR == false)
+                datos = datos.FindAll(x => x.EDI_SED_ID_SEDE == sess.Usuario.USU_SED_ID_SEDE);
+
+            mapper.Map<List<Edificio>, List<DTOEdificio>>(datos, edificios);
+
+            return edificios;
+        }
+
+        public async Task<DTOEdificio> Guardar(DTOEdificio entidad)
+        {
+            Edificio Edificio = new Edificio();
+
+            if (entidad.EDI_ID_EDIFICIO != 0)
+            {
+                Edificio = unitOfWork.EdificioRepo.GetAll(t => t.EDI_ID_EDIFICIO == entidad.EDI_ID_EDIFICIO).FirstOrDefault();
+                entidad.EDI_FECHA_CREACION = Edificio.EDI_FECHA_CREACION;
+
+                mapper.Map<DTOEdificio, Edificio>(entidad, Edificio);
+                unitOfWork.EdificioRepo.Update(Edificio);
+            }
+            else
+            {
+                Edificio = mapper.Map<DTOEdificio, Edificio>(entidad);
+                Edificio.EDI_FECHA_ACTUALIZACION = null;
+
+                unitOfWork.EdificioRepo.Create(Edificio);
+            }
+
+            await unitOfWork.Save();
+            entidad.EDI_ID_EDIFICIO = Edificio.EDI_ID_EDIFICIO;
+
+            return entidad;
+        }
+
+        public DTOEdificio BuscarId(int id)
+        {
+            DTOEdificio edificio = new DTOEdificio();
+            Edificio dato = unitOfWork.EdificioRepo.GetAll(t => t.EDI_ID_EDIFICIO == id, includeProperties: "Sede").FirstOrDefault();
+
+            if (dato != null)
+                edificio = mapper.Map<Edificio, DTOEdificio>(dato);
+
+            return edificio;
+        }
+
+        public DTOEdificio ExisteEdificio(string nombre, int id_sede)
+        {
+            DTOEdificio edificio = new DTOEdificio();
+
+            Edificio dato = unitOfWork.EdificioRepo.GetAll(t => t.EDI_NOMBRE.ToUpper() == nombre.ToUpper() && t.EDI_SED_ID_SEDE == id_sede
+                                                           , includeProperties: "Sede").FirstOrDefault();
+            if (dato != null)
+                edificio = mapper.Map<Edificio, DTOEdificio>(dato);
+
+            return edificio;
+        }
+
+        //public async Task Eliminar(int id)
+        //{
+        //    unitOfWork.EdificioRepo.DeleteAll(t => t.EDI_ID_EDIFICIO == id);
+        //    await unitOfWork.Save();
+        //}
+
+        public async Task<DTORespuesta> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                respuesta.Resultado = true;
+                unitOfWork.EdificioRepo.DeleteAll(t => t.EDI_ID_EDIFICIO == id);
+                await unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
+        }
+
+    }
+}

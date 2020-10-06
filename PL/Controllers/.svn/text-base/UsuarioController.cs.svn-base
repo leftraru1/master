@@ -1,0 +1,169 @@
+﻿using BL.Modelos;
+using EL.DTO;
+using PL.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using ColaboradoresAiep.Crypto;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class UsuarioController : Controller
+    {
+        public MUsuario modelo { get; set; }
+
+        public UsuarioController()
+        {
+            modelo = new MUsuario();
+        }
+
+        public ActionResult Index()
+        {
+            return View();       
+        }
+
+        [HttpPost]
+        public JsonResult BuscarTodos(DTOUsuario usuario)
+        {
+            List<DTOUsuario> usuarios = new List<DTOUsuario>();
+            try
+            {
+                usuarios = modelo.BuscarTodos(usuario);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = usuarios };
+        }
+
+        public JsonResult BuscarPorRut(string rut)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            DTOUsuario usuario = new DTOUsuario();
+            string codigoSistema = System.Web.Configuration.WebConfigurationManager.AppSettings["WScodigoSistema"];
+
+            codigoSistema = Encriptador.Encriptar(codigoSistema);
+            rut = Encriptador.Encriptar(rut.Replace(".",""));
+
+            try
+            {
+                respuesta = modelo.BuscarPorRut(codigoSistema, rut);
+                
+                if (respuesta.Resultado == true)
+                {
+                    usuario = (DTOUsuario)respuesta.Elemento;
+                    string rut_completo = Encriptador.Desencriptar(rut);
+                    string[] partes = rut_completo.Split('-');
+                    usuario.USU_RUT = int.Parse(partes[0]);
+                    usuario.USU_DV_RUT = partes[1];
+                }
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Guardar(DTOUsuario usuario)
+        {
+            try
+            {
+                if (usuario == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "Datos inconsistentes";
+                }
+                else
+                    if (ModelState.IsValid)
+                    {
+                        usuario = await modelo.Guardar(usuario);
+                        Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.StatusDescription = "Datos inválidos : " + errors;
+                    }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = usuario };
+        }
+
+        public JsonResult ExisteUsuario(string rut_completo)
+        {
+            DTOUsuario usuario = new DTOUsuario();
+            try
+            {
+                usuario = modelo.ExisteUsuario(rut_completo);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = usuario };
+        }
+
+        public JsonResult BuscarId(int id)
+        {
+            DTOUsuario usuario = new DTOUsuario();
+            try
+            {
+                usuario = modelo.BuscarId(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = usuario };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                respuesta = await modelo.Eliminar(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+
+    }
+}

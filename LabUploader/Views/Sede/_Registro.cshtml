@@ -1,0 +1,55 @@
+﻿<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-institution"></i> Sedes <span> > Registro</span></h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form id="FormTrabajador">
+            <input id="hdIdTrabajador" type="hidden" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label " for="txtNombres">Nombre sede</label>
+                        <input type="text" id="txtNombres" name="txtNombres" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="50">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label " for="txtNombres">Estado</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="radio" name="Estado" value="Activo"> Activo
+                        </div>
+                        <div class="col-md-6">
+                            <input type="radio" name="Estado" value="Inactivo"> Inactivo
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-footer clearfix">
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-md-offset-6">
+                <button id="btnGuardar" type="button" name="btnGuardar" class="btn btn-round btn-sm btn-primary btn-block habilitadoModifica">
+                    <i class="glyphicon glyphicon-save"></i>
+                    Guardar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnLimpiar" type="button" class="btn btn-sm btn-block btn-round btn-primary habilitadoModifica">
+                    <i class="fa fa-lg fa-fw fa-recycle"></i>
+                    Limpiar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnVolver" type="button" name="btnVolver" class="btn btn-round btn-sm btn-danger btn-block ">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,184 @@
+﻿using AutoMapper;
+using DAL;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace BL.Modelos
+{
+    public class MUsuario
+    {
+
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+        private BL.Utilidades.DESEncrypt encriptacion { get; set; }
+
+        public MUsuario()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+            encriptacion = new Utilidades.DESEncrypt();            
+        }  
+
+        public List<DTOUsuario> BuscarTodos(DTOUsuario filtro)
+        {
+            string[] partes = null;
+            int USU_RUT = 0;
+            string USU_DV_RUT = string.Empty;
+
+            if (filtro.USU_RUT_COMPLETO != null)
+            {
+                partes = filtro.USU_RUT_COMPLETO.Replace(".", "").Split('-');
+                USU_RUT = int.Parse(partes[0]);
+                USU_DV_RUT = partes[1];
+            }
+
+            List<DTOUsuario> usuarios = new List<DTOUsuario>();
+            List<Usuario> datos = unitOfWork.UsuarioRepo.GetAll(t => ((t.USU_RUT == USU_RUT && t.USU_DV_RUT == USU_DV_RUT) || filtro.USU_RUT_COMPLETO == null)
+                                                                && (t.USU_NOMBRE_COMPLETO.ToUpper().Contains(filtro.USU_NOMBRE_COMPLETO.ToUpper()) || filtro.USU_NOMBRE_COMPLETO == null)
+                                                                && (t.USU_PERF_ID_PERFIL == filtro.USU_PERF_ID_PERFIL || filtro.USU_PERF_ID_PERFIL == 0)
+                                                                && (t.USU_SED_ID_SEDE == filtro.USU_SED_ID_SEDE || filtro.USU_SED_ID_SEDE == null)
+                                                                && (t.USU_VIGENTE == filtro.USU_VIGENTE || filtro.USU_VIGENTE == null)
+                                                                && t.Perfil.PERF_VIGENCIA == true
+                                                               ,includeProperties: "Perfil, Sede").ToList();
+
+            mapper.Map<List<Usuario>, List<DTOUsuario>>(datos, usuarios);
+
+            return usuarios;
+        }
+
+        public DTORespuesta BuscarPorRut(string codigoSistema, string rut_encrip)
+        {
+            DTOUsuario usuario = new DTOUsuario();
+            DTORespuesta respuesta = new DTORespuesta();
+
+            WSGestionColaboradores.DatosColaboradorClassIn oEntrada = new WSGestionColaboradores.DatosColaboradorClassIn();
+            WSGestionColaboradores.DatosColaboradorClassOut oSalida = new WSGestionColaboradores.DatosColaboradorClassOut();
+            WSGestionColaboradores.WSGestionColaboradoresClient WsUsuario = new WSGestionColaboradores.WSGestionColaboradoresClient();
+
+            oEntrada.codigo_sistema = codigoSistema;
+            oEntrada.rut = rut_encrip;
+
+            WsUsuario.Open();
+            oSalida = WsUsuario.DatosColaborador(oEntrada);
+            if (oSalida.estado == "OK")
+            {
+                if (oSalida.sam != "No definido")
+                {
+                    usuario.USU_LOGIN = oSalida.sam;
+                    string NombSede = oSalida.sede.Trim().ToUpper();
+
+                    DTOSede sede = new DTOSede();
+                    Sede datoSede = unitOfWork.SedeRepo.GetAll(t => t.SED_NOMBRE.Trim().ToUpper() == NombSede).FirstOrDefault();
+                    if (datoSede != null)
+                    {
+                        sede = mapper.Map<Sede, DTOSede>(datoSede);
+                        usuario.USU_SED_ID_SEDE = sede.SED_ID_SEDE;
+                    }
+
+                    respuesta.Resultado = true;
+                    respuesta.Elemento = usuario;
+                }
+                else
+                {
+                    respuesta.Resultado = false;
+                    respuesta.Mensaje = "Rut ingresado no se encuentra registrado en AIEP";
+                }       
+            }
+            else
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = oSalida.mensaje;
+            }
+            WsUsuario.Close();
+
+            return respuesta;
+        }
+
+        public async Task<DTOUsuario> Guardar(DTOUsuario entidad)
+        {
+            string[] partes = entidad.USU_RUT_COMPLETO.Replace(".", "").Split('-');
+            int USU_RUT = int.Parse(partes[0]);
+            string USU_DV_RUT = partes[1];
+
+            entidad.USU_RUT = USU_RUT;
+            entidad.USU_DV_RUT = USU_DV_RUT;
+
+            Usuario Usuario = new Usuario();
+            if (entidad.USU_ID_USUARIO != 0)
+            {
+                Usuario = unitOfWork.UsuarioRepo.GetAll(t => t.USU_ID_USUARIO == entidad.USU_ID_USUARIO, includeProperties: "Perfil, Sede").FirstOrDefault();
+
+                mapper.Map<DTOUsuario, Usuario>(entidad, Usuario);
+                unitOfWork.UsuarioRepo.Update(Usuario);
+            }
+            else
+            {
+                Usuario = mapper.Map<DTOUsuario, Usuario>(entidad);
+
+                unitOfWork.UsuarioRepo.Create(Usuario);
+            }
+
+            await unitOfWork.Save();
+
+            entidad.USU_ID_USUARIO = Usuario.USU_ID_USUARIO;
+            Usuario = unitOfWork.UsuarioRepo.GetAll(t => t.USU_ID_USUARIO == entidad.USU_ID_USUARIO, includeProperties: "Perfil, Sede").FirstOrDefault();
+            mapper.Map<Usuario, DTOUsuario>(Usuario, entidad);
+
+            return entidad;
+        }
+
+        public DTOUsuario ExisteUsuario(string rut_completo)
+        {
+            string[] partes = rut_completo.Replace(".", "").Split('-');
+            int USU_RUT = int.Parse(partes[0]);
+            string USU_DV_RUT = partes[1];
+            
+            DTOUsuario usuario = new DTOUsuario();
+            Usuario dato = unitOfWork.UsuarioRepo.GetAll(t => t.USU_RUT == USU_RUT && t.USU_DV_RUT == USU_DV_RUT, includeProperties: "Perfil, Sede").FirstOrDefault();
+
+            if (dato != null)
+                usuario = mapper.Map<Usuario, DTOUsuario>(dato);
+
+            return usuario;
+        }
+
+        public DTOUsuario BuscarId(int id)
+        {
+            DTOUsuario usuario = new DTOUsuario();
+            Usuario dato = unitOfWork.UsuarioRepo.GetAll(t => t.USU_ID_USUARIO == id, includeProperties: "Perfil, Sede").FirstOrDefault();
+
+            if (dato != null)
+            {
+                usuario = mapper.Map<Usuario, DTOUsuario>(dato);
+                usuario.USU_RUT_COMPLETO = usuario.USU_RUT.ToString() + "-" + usuario.USU_DV_RUT;
+            }
+
+            return usuario;
+        }
+
+        public async Task<DTORespuesta> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                respuesta.Resultado = true;
+                unitOfWork.UsuarioRepo.DeleteAll(t => t.USU_ID_USUARIO == id);
+                await unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
+        }
+    }
+
+}

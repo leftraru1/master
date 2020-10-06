@@ -1,0 +1,112 @@
+﻿using AutoMapper;
+using DAL;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BL.Modelos
+{
+    public class MPerfil
+    {
+
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MPerfil()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public List<DTOPerfil> BuscarPerfiles()
+        {
+
+            List<DTOPerfil> perfiles = new List<DTOPerfil>();
+
+            List<Perfil> collection = unitOfWork.PerfilRepo.GetAll().ToList();
+
+            mapper.Map<List<Perfil>, List<DTOPerfil>>(collection, perfiles);
+
+            return perfiles;
+
+        }
+
+        public List<DTOPerfil> BuscarPerfilesVigentes()
+        {
+
+            List<DTOPerfil> perfiles = new List<DTOPerfil>();
+
+            List<Perfil> collection = unitOfWork.PerfilRepo.GetAll(x => x.PERF_VIGENCIA == true).ToList();
+
+            mapper.Map<List<Perfil>, List<DTOPerfil>>(collection, perfiles);
+
+            return perfiles;
+
+        }
+
+        public DTOPerfil BuscarPerfil(int id)
+        {
+
+            DTOPerfil perfil = new DTOPerfil();
+
+            Perfil dato = unitOfWork.PerfilRepo.GetAll(x => x.PERF_ID == id, includeProperties: "Funciones.Funcionalidad").FirstOrDefault();
+
+            mapper.Map<Perfil, DTOPerfil>(dato, perfil);
+
+            return perfil;
+
+        }
+
+        public async Task Eliminar(int id)
+        {
+            unitOfWork.PerfilRepo.DeleteAll(x => x.PERF_ID == id, includeProperties: "Funciones");
+            await unitOfWork.Save();
+        }
+
+        public async Task<int> Guardar(DTOPerfil dato)
+        {
+
+            Perfil perfil = new Perfil();
+
+            List<Funcionalidad> funcionalidades = unitOfWork.FuncionalidadRepo.GetAll().ToList();
+            int i = 0;
+            while (dato.Funciones.Count > i)
+            {
+                DTOFuncionalidad item = dato.Funciones[i];
+                Funcionalidad f = funcionalidades.FindAll(x => x.FUN_ID == item.FUN_ID && x.FUN_PADRE_ID != null).FirstOrDefault();
+                if (f != null)
+                    if (dato.Funciones.FindAll(p => p.FUN_ID == f.FUN_PADRE_ID).Count == 0)
+                        dato.Funciones.Add(new DTOFuncionalidad() { FUN_ID = (int)f.FUN_PADRE_ID, PERF_ID = dato.PERF_ID });
+                i++;
+            }
+
+            //foreach (var item in dato.Funciones)
+            //{
+            //    Funcionalidad f = funcionalidades.FindAll(x=>x.FUN_ID == item.FUN_ID && x.FUN_PADRE_ID != null).FirstOrDefault();
+            //    if (f != null)
+            //        dato.Funciones.Add(new DTOFuncionalidad() { FUN_ID = (int)f.FUN_PADRE_ID, PERF_ID = perfil.PERF_ID });
+            //}
+
+            mapper.Map<DTOPerfil, Perfil>(dato, perfil);
+
+            if (perfil.PERF_ID != 0)
+            {
+                unitOfWork.PerfilFuncionalidadRepo.DeleteAll(x => x.PERF_ID == perfil.PERF_ID);
+                unitOfWork.PerfilRepo.Update(perfil);
+                unitOfWork.PerfilFuncionalidadRepo.CreateAll(perfil.Funciones);
+            }
+            else
+                unitOfWork.PerfilRepo.Create(perfil);
+
+            await unitOfWork.Save();
+
+            return perfil.PERF_ID;
+
+        }
+
+    }
+}

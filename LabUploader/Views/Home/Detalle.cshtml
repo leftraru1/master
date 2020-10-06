@@ -1,0 +1,63 @@
+﻿
+@using EL.DTO
+@model DTONoticia
+
+<div id="content" class="content">
+    <div id="contenido" class="row">
+        <div id="contenedorNoticia" class="col-xs-12 col-md-9">
+            <div id="contenedorNoticia" class="panel">
+                <div class="col-md-12 contenedor-lectura-noticia">
+                    <h2>@Model.NOT_TITULO</h2>
+                    <p class="destacar-post-noticia"><span class="glyphicon glyphicon-time"></span>@Model.NOT_FECHA_EDICION.ToShortDateString()</p>
+                    <div class="lectura-noticia">
+                        @Html.Raw(Model.NTEX_TEXTO)
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+        <div id="listadoBusqueda" class="col-xs-12 col-sm-12 col-md-3">
+
+            <div class="panel panel-default">
+                <div class="col-xs-12 col-md-12">
+                    <br />
+                    <label for="mesAnio" class="control-label ">Mes</label>
+                    <div class="input-group monthView">
+                        <input type="text" id="mesAnio" name="mesAnio" class="form-control input-sm" maxlength="12">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+                <hr />
+                <div class="panel-heading">
+                    <h4 class="panel-title">SELECCIONE NOTICIA</h4>
+                </div>
+
+                <div id="lst_noticias" class="list-group">
+                    <div id="contenedorNoticias"></div>
+                    <nav id="pagination" style="float: right;">
+                        <ul class="pagination ">
+                            <li id="li_prev" class="page-item"><a class="page-link" href="javascript:void(0);">Anterior</a></li>
+                            <li id="li_next" class="page-item"><a class="page-link" href="javascript:void(0);">Siguiente</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+
+@section scripts{
+    @Scripts.Render("~/js/noticiasDetalle")
+}
+@section pie{
+    <div class="cod-pantalla">KBC-F0043(v1.1.2)</div>
+}

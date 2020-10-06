@@ -1,0 +1,39 @@
+﻿@using EL.DTO;
+@using BL.Modelos;
+@{
+    DTOSessionUsuario sess = new DTOSessionUsuario();
+    string nombreCompleto = string.Empty;
+    if (MSession.CheckSession())
+    {
+        sess = (DTOSessionUsuario)BL.Modelos.MSession.ReturnSessionObject();
+        nombreCompleto = sess.Usuario.USU_NOMBRE_COMPLETO;
+    }
+}
+
+<!-- logout button -->
+<div id="logout" class="btn-header pull-right">
+    <span> <a href="@Url.Action("CerrarSession", "Login")" title="Cerrar sesión" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
+</div>
+
+<div id="user-options" class="pull-right" style="padding-left:5px; padding-top:5px;">
+    <ul id="mobile-profile-img" class="header-dropdown-list">
+        <li class="">
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="@Url.Action("CerrarSession", "Login")" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong>L</>ogout</strong></a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+
+
+<!-- collapse menu button -->
+<div id="hide-menu" class="btn-header pull-right">
+    <span> <a href="javascript:void(0);" data-action="toggleMenu" title="Menú lateral"><i class="fa fa-reorder"></i></a> </span>
+</div>
+
+<div id="user-name" class="pull-right margen-box">
+    <label>@nombreCompleto</label>
+</div>

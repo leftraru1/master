@@ -1,0 +1,123 @@
+﻿using AutoMapper;
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using EL.DTO;
+using EL.Entidades;
+
+using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using System.Web.Configuration;
+
+namespace BL.Modelos
+{
+    public class MSede
+    {
+
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MSede()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public List<DTOSede> Buscar(DTOSede filtro)
+        {
+            List<DTOSede> sedes = new List<DTOSede>();
+
+            DTOSessionUsuario sess = (DTOSessionUsuario)MSession.ReturnSessionObject();
+            List<Sede> datos = unitOfWork.SedeRepo.GetAll().ToList();
+
+            if (sess.Usuario.Perfil.PERF_ADMINISTRADOR == false)
+                datos = datos.FindAll(x => x.SED_ID_SEDE == sess.Usuario.USU_SED_ID_SEDE);
+
+            mapper.Map<List<Sede>, List<DTOSede>>(datos, sedes);
+
+            return sedes;
+        }
+
+        public DTORespuesta ListaSedes(string codigoSistema)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+
+            WSGestionColaboradores.DatosSedesClassIn oEntrada = new WSGestionColaboradores.DatosSedesClassIn();
+            WSGestionColaboradores.DatosSedesClassOut oSalida = new WSGestionColaboradores.DatosSedesClassOut();
+            WSGestionColaboradores.WSGestionColaboradoresClient WsSedes = new WSGestionColaboradores.WSGestionColaboradoresClient();
+
+            oEntrada.codigo_sistema = codigoSistema;
+
+            WsSedes.Open();
+            oSalida = WsSedes.DatosSedes(oEntrada);
+            if (oSalida.estado == "OK")
+            {
+
+                DataTable dt = new DataTable();
+                dt.Columns.AddRange(new DataColumn[2] { new DataColumn("SED_CODIGO", typeof(string)),
+                                                        new DataColumn("SED_NOMBRE",typeof(string)) });
+
+                foreach (var item in oSalida.lista_sedes)
+                {
+                    dt.Rows.Add(item.id, item.nombre);
+                }
+
+                respuesta.Resultado = true;
+                respuesta.Elemento = dt;
+            }
+            else
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = oSalida.mensaje;
+            }
+            WsSedes.Close();
+
+            return respuesta;
+        }
+
+        public DTORespuesta BulkInsert(string constr, string codigoSistema)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                DTORespuesta salida = new DTORespuesta();
+                salida = ListaSedes(codigoSistema);
+                if (salida.Resultado == true)
+                {
+                    using (SqlConnection con = new SqlConnection(constr))
+                    {
+                        using (SqlCommand cmd = new SqlCommand("SP_SEDES_BULKINSERT"))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Connection = con;
+                            cmd.Parameters.AddWithValue("@TB_SEDES", (DataTable)salida.Elemento);
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+                    }
+
+                    respuesta.Resultado = true;
+                }
+                else
+                {
+                    respuesta.Resultado = false;
+                    respuesta.Mensaje = salida.Mensaje;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
+        }
+
+    }
+}

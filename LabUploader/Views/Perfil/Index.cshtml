@@ -1,0 +1,99 @@
+﻿<div id="content" class="content">
+    <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-unlock-alt"></i> Perfil</h1>
+    <form id="FormPerfil">
+        <input type="hidden" id="hdPerID" name="hdPerID" />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default clearfix">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Nombre</label>
+                                    <input type="text" id="txtNombre" name="txtNombre" class="form-control input-sm input-outer-trim" maxlength="35">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Descripción</label>
+                                    <textarea id="txtDescripcion" name="txtDescripcion" class=" form-control input-sm input-outer-trim" rows="5" maxlength="500"></textarea>
+                                </div>
+                            </div>
+                        
+                            <div class="col-xs-12 col-md-1">
+                                <label class="control-label">Administrador</label>
+                                <div class="form-group">
+                                    <div class="boton-switch pull-left">
+                                        <input type="checkbox" id="chkAdministrador" name="chkAdministrador" class="switchery" data-on="Si" data-off="No" data-theme="blue" checked />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-1">
+                                <label class="control-label">Vigencia</label>
+                                <div class="form-group">
+                                    <div class="boton-switch pull-left">
+                                        <input type="checkbox" id="chkVigente" name="chkVigente" class="switchery" data-on="Si" data-off="No" data-theme="blue" checked />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer clearfix">
+                         <select multiple="multiple" size="10" name="cmbFunciones" id="cmbFunciones">
+                                
+                            </select>
+                    </div>
+                    <div class="panel-footer clearfix">
+                        <div class="col-xs-12 col-md-2 col-md-offset-8">
+                            <button id="btnLimpiar" type="button" class="btn btn-sm btn-block btn-round btn-primary habilitadoModifica">
+                                <i class="fa fa-lg fa-fw fa-recycle"></i>
+                                Limpiar
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-2">
+                            <button id="btnGuardar" type="button" name="btnGuardar" class="btn btn-round btn-sm btn-primary btn-block habilitadoModifica">
+                                <i class="glyphicon glyphicon-save"></i>
+                                Guardar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div><!-- Fin row -->
+    </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default clearfix">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <table id="tbPerfiles" class="data-table table-hover table table-condensed table-striped table-bordered nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="hidden-lg hidden-md hidden-sm visible-xs firtscell"></th>
+                                        <th></th>
+                                        <th></th>                                        
+                                        <th>PERFIL</th>
+                                        <th>DESCRIPCIÓN</th>
+                                        <th>ADMINISTRADOR</th>
+                                        <th>VIGENCIA</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</div>
+
+@section scripts{
+    @Scripts.Render("~/js/perfil")
+}
+@section pie{
+<div class="cod-pantalla">SESC-F0011 v(1.1.1)</div>
+}

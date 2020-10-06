@@ -1,0 +1,52 @@
+﻿using AutoMapper;
+using DAL;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BL.Modelos
+{
+    public class MFuncionalidad
+    {
+
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MFuncionalidad()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public List<DTOFuncionalidad> BuscarSeleccionables()
+        {
+
+            List<DTOFuncionalidad> seleccionables = new List<DTOFuncionalidad>();
+
+            List<Funcionalidad> funciones = unitOfWork.FuncionalidadRepo.GetAll(x=> x.FUN_TIPO == 2).ToList();
+
+            mapper.Map<List<Funcionalidad>, List<DTOFuncionalidad>>(funciones, seleccionables);
+
+            return seleccionables;
+
+        }
+
+        public List<DTOFuncionalidad> BuscarPerfil(int id)
+        {
+
+            List<DTOFuncionalidad> seleccionables = new List<DTOFuncionalidad>();
+
+            List<Funcionalidad> funciones = unitOfWork.FuncionalidadRepo.GetAll(x => x.Perfiles.Any(p=> p.PERF_ID == id)).ToList();
+
+            mapper.Map<List<Funcionalidad>, List<DTOFuncionalidad>>(funciones, seleccionables);
+
+            return seleccionables;
+
+        }
+
+    }
+}

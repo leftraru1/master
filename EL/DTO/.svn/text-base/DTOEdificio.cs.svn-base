@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.DTO
+{
+    public class DTOEdificio
+    {
+ 
+        public long EDI_ID_EDIFICIO { get; set; }
+
+        [MaxLength(100)]
+        public string EDI_NOMBRE { get; set; }
+
+        public DateTime EDI_FECHA_CREACION { get; set; }
+
+        public bool? EDI_VIGENTE { get; set; }
+
+        public DateTime? EDI_FECHA_ACTUALIZACION { get; set; }
+
+        public int EDI_SED_ID_SEDE { get; set; }
+
+        public int EDI_USU_ID_USUARIO { get; set; }
+
+        [MaxLength(100)]
+        public string SED_NOMBRE { get; set; }
+
+    }
+}

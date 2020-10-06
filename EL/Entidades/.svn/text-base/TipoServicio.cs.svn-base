@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.Entidades
+{
+    [Table("SESC_TIPO_SERVICIO")]
+    public class TipoServicio
+    {
+        [Key]
+        [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        public int TIP_ID_TIPO_SERVICIO { get; set; }
+
+        [MaxLength(100)]
+        public string TIP_NOMBRE { get; set; }
+
+        public bool TIP_VIGENTE { get; set; }
+
+        [DataType(DataType.Time)]
+        public DateTime TIP_FECHA_CREACION { get; set; }
+
+        [DataType(DataType.Time)]
+        public DateTime TIP_FECHA_ACTUALIZACION { get; set; }
+
+        //public int? USU_ID { get; set; }
+        public int TIP_USU_ID_USUARIO { get; set; }
+        [ForeignKey("TIP_USU_ID_USUARIO")]
+        public Usuario Usuario { get; set; }
+
+        public IList<Servicio> Servicios { get; set; }
+
+    }
+}
+
+

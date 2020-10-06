@@ -1,0 +1,38 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Essbio.SUL
+</name>
+</assembly>
+<members>
+<member name="P:Essbio.SUL.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:Essbio.SUL.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:Essbio.SUL.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:Essbio.SUL.Conexion.#ctor(Essbio.SUL.Seguridad.Usuario)">
+	<summary>
+ Constructor de la conexion.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Essbio.SUL.Conexion.ExecNumber(System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.Int32,System.String@)">
+	<summary>
+ Ejecuta funcion que retorna numero con parametros de entrada sin parametros de salida.
+ </summary>
+	<param name="vProcAlmacenado"></param>
+	<param name="vParaMetros"></param>
+	<param name="vTimeoutConexion"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member>
+</members>
+</doc>

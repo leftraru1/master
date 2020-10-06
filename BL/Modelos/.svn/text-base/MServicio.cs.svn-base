@@ -1,0 +1,178 @@
+﻿using AutoMapper;
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using EL.DTO;
+using EL.Entidades;
+using System.Web;
+
+namespace BL.Modelos
+{
+    public class MServicio
+    {
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+        private BL.Utilidades.DESEncrypt Encrypt;
+
+        public MServicio() 
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+            Encrypt = new BL.Utilidades.DESEncrypt();
+        }
+
+        public List<DTOServicio> ObtenerTodos()
+        {
+            List<DTOServicio> servicios = new List<DTOServicio>();
+            List<Servicio> datos = unitOfWork.ServicioRepo.GetAll(x => (x.SER_ID_SERVICIO > 0), includeProperties: "Edificio, TipoServicio, Edificio.Sede").ToList();
+
+            DTOSessionUsuario session = (DTOSessionUsuario)MSession.ReturnSessionObject();
+            if (session.Usuario.USU_PERF_ADMINISTRADOR == false)
+                if (session.Usuario.USU_SED_ID_SEDE != null)
+                    datos = datos.FindAll(t => t.Edificio.EDI_SED_ID_SEDE == (int)session.Usuario.USU_SED_ID_SEDE).ToList();
+
+            mapper.Map<List<Servicio>, List<DTOServicio>>(datos, servicios);
+            return servicios;
+        }
+
+        public List<DTOServicio> Buscar(DTOServicio filtro)
+        {
+            List<DTOServicio> servicios = new List<DTOServicio>();
+            List<Servicio> datos = unitOfWork.ServicioRepo.GetAll(x => (x.SER_ID_SERVICIO == filtro.SER_ID_SERVICIO || filtro.SER_ID_SERVICIO == 0)
+                                                                    && (x.SER_NOMBRE.Contains(filtro.SER_NOMBRE) || filtro.SER_NOMBRE == null)
+                                                                    && (x.SER_EDI_ID_EDIFICIO == filtro.SER_EDI_ID_EDIFICIO || filtro.SER_EDI_ID_EDIFICIO == 0)
+                                                                    && (x.SER_TIP_ID_TIPO_SERVICIO == filtro.SER_TIP_ID_TIPO_SERVICIO || filtro.SER_TIP_ID_TIPO_SERVICIO == 0)
+                                                                    && (x.SER_VIGENTE == filtro.SER_VIGENTE 
+                                                                    && x.Edificio.EDI_VIGENTE == true && x.TipoServicio.TIP_VIGENTE == true)
+                                                                    , includeProperties: "Edificio, TipoServicio, Edificio.Sede"
+                                                                  ).ToList();
+
+            mapper.Map<List<Servicio>, List<DTOServicio>>(datos, servicios);
+            if (filtro.Sede.SED_ID_SEDE > 0)
+                servicios = servicios.FindAll(x => x.Sede.SED_ID_SEDE == filtro.Sede.SED_ID_SEDE);
+                
+            return servicios;
+        }
+
+        public List<DTOServicio> BuscarTodos(DTOServicio filtro)
+        {
+            List<DTOServicio> servicios = new List<DTOServicio>();
+            List<Servicio> datos = unitOfWork.ServicioRepo.GetAll(x => (x.SER_ID_SERVICIO == filtro.SER_ID_SERVICIO || filtro.SER_ID_SERVICIO == 0)
+                                                                    && (x.SER_NOMBRE.Contains(filtro.SER_NOMBRE) || filtro.SER_NOMBRE == null)
+                                                                    && (x.SER_EDI_ID_EDIFICIO == filtro.SER_EDI_ID_EDIFICIO || filtro.SER_EDI_ID_EDIFICIO == 0)
+                                                                    && (x.SER_TIP_ID_TIPO_SERVICIO == filtro.SER_TIP_ID_TIPO_SERVICIO || filtro.SER_TIP_ID_TIPO_SERVICIO == 0)
+                                                                    && (x.SER_VIGENTE == filtro.SER_VIGENTE || filtro.SER_VIGENTE == null)
+                                                                    , includeProperties: "Edificio, TipoServicio, Edificio.Sede"
+                                                                  ).ToList();
+
+            mapper.Map<List<Servicio>, List<DTOServicio>>(datos, servicios);
+            if (filtro.Sede.SED_ID_SEDE > 0)
+                servicios = servicios.FindAll(x => x.Sede.SED_ID_SEDE == filtro.Sede.SED_ID_SEDE);
+
+            return servicios;
+        }
+
+        public async Task<DTOServicio> Guardar(DTOServicio entidad)
+        {
+            Servicio Servicio = new Servicio();
+            if (entidad.SER_ID_SERVICIO != 0)
+            {
+                Servicio = unitOfWork.ServicioRepo.GetAll(t => t.SER_ID_SERVICIO == entidad.SER_ID_SERVICIO, includeProperties: "Edificio, TipoServicio, Edificio.Sede").FirstOrDefault();
+                entidad.SER_FECHA_CREACION = Servicio.SER_FECHA_CREACION;
+
+                mapper.Map<DTOServicio, Servicio>(entidad, Servicio);
+                unitOfWork.ServicioRepo.Update(Servicio);
+            }
+            else
+            {
+                Servicio = mapper.Map<DTOServicio, Servicio>(entidad);
+                Servicio.SER_FECHA_ACTUALIZACION = null;
+                
+                unitOfWork.ServicioRepo.Create(Servicio);
+            }
+
+            await unitOfWork.Save();
+
+            entidad.SER_ID_SERVICIO = Servicio.SER_ID_SERVICIO;
+            Servicio = unitOfWork.ServicioRepo.GetAll(t => t.SER_ID_SERVICIO == entidad.SER_ID_SERVICIO, includeProperties: "Edificio, TipoServicio, Edificio.Sede").FirstOrDefault();
+            mapper.Map<Servicio, DTOServicio>(Servicio, entidad);
+
+            return entidad;
+        }
+
+        public async Task<DTOServicio> ActualizaURL(DTOServicio entidad)
+        {
+            Servicio Servicio = new Servicio();
+            string EVALUACION_URL = System.Web.Configuration.WebConfigurationManager.AppSettings["EvaluacionURL"];
+
+            if (string.IsNullOrEmpty(EVALUACION_URL) == true)
+                EVALUACION_URL = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+
+            string url = EVALUACION_URL + "/evaluacion?";
+
+            if (entidad.SER_ID_SERVICIO != 0)
+            {
+                Servicio = unitOfWork.ServicioRepo.GetAll(t => t.SER_ID_SERVICIO == entidad.SER_ID_SERVICIO, includeProperties: "Edificio, TipoServicio, Edificio.Sede").FirstOrDefault();
+                entidad.SER_URL = url + Encrypt.EncriptarCadenaDeCaracteres("id_servicio=" + Servicio.SER_ID_SERVICIO);
+
+                mapper.Map<DTOServicio, Servicio>(entidad, Servicio);
+                unitOfWork.ServicioRepo.Update(Servicio);
+            }
+
+            await unitOfWork.Save();
+
+            Servicio = unitOfWork.ServicioRepo.GetAll(t => t.SER_ID_SERVICIO == entidad.SER_ID_SERVICIO, includeProperties: "Edificio, TipoServicio, Edificio.Sede").FirstOrDefault();
+            mapper.Map<Servicio, DTOServicio>(Servicio, entidad);
+
+            return entidad;
+        }
+
+        public DTOServicio ExisteServicio(string nombre, int id_edificio, int id_tipo)
+        {
+            DTOServicio servicio = new DTOServicio();
+            Servicio dato = unitOfWork.ServicioRepo.GetAll(t => t.SER_NOMBRE.ToUpper() == nombre.ToUpper()
+                                                           && t.SER_EDI_ID_EDIFICIO == id_edificio
+                                                           && t.SER_TIP_ID_TIPO_SERVICIO == id_tipo
+                                                          , includeProperties: "Edificio, TipoServicio, Edificio.Sede").FirstOrDefault();
+
+            if (dato != null)
+                servicio = mapper.Map<Servicio, DTOServicio>(dato);
+
+            return servicio;
+        }
+
+        public DTOServicio BuscarId(int id)
+        {
+            DTOServicio servicio = new DTOServicio();
+            Servicio dato = unitOfWork.ServicioRepo.GetAll(t => t.SER_ID_SERVICIO == id, includeProperties: "Edificio, TipoServicio, Edificio.Sede").FirstOrDefault();
+
+            if (dato != null)
+                servicio = mapper.Map<Servicio, DTOServicio>(dato);
+
+            return servicio;
+        }
+
+        public async Task<DTORespuesta> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                respuesta.Resultado = true;
+                unitOfWork.ServicioRepo.DeleteAll(t => t.SER_ID_SERVICIO == id);
+                await unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
+        }
+
+
+    }
+}

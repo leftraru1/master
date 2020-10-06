@@ -1,0 +1,48 @@
+﻿@model EL.DTO.DTOFileModel
+<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-upload"></i> Carga de Informes</h1>
+@using (Html.BeginForm("UploadFiles", "Informes", FormMethod.Post, new { enctype = "multipart/form-data", id = "FormUpload" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.files, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple", @id = "file", @class = "form-control input-sm input-outer-trim habilitadoModifica" })
+                @Html.ValidationMessageFor(model => model.files, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="panel-footer clearfix">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <ul id="fileList" class="tabs"></ul>
+                </div>
+                <div class="form-group">
+                    <div id="msgUser" class="col-xs-12 col-md-12  @ViewBag.CssMSg">
+                        @ViewBag.UploadStatus
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer clearfix">
+            <div class="row">
+                <div class="col-xs-12 col-md-2 col-md-offset-8">
+                    <button id="btnCargar" type="button" name="btnCargar" class="btn btn-round btn-sm btn-primary btn-block ">
+                        <i class="glyphicon glyphicon-upload"></i>
+                        Subir Archivos
+                    </button>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <button id="btnLimpiar" type="button" name="btnLimpiar" class="btn btn-round btn-sm btn-success btn-block ">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+}

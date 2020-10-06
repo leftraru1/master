@@ -1,0 +1,393 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using BL.Modelos;
+using EL.DTO;
+using System.Net;
+using System.Threading.Tasks;
+using PL.Models;
+using System.IO;
+using System.Drawing;
+using QRCoder;
+using System.Web.Configuration;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class ServicioController : Controller
+    {
+        public MServicio modelo { get; set; }
+        DTOSessionUsuario session = (DTOSessionUsuario)MSession.ReturnSessionObject();
+        public int widthImage { get; set; }
+        public int heigthImage { get; set; }
+
+        public ServicioController()
+        {
+            modelo = new MServicio();
+            widthImage = int.Parse(WebConfigurationManager.AppSettings["ImageQRWidth"]);
+            heigthImage = int.Parse(WebConfigurationManager.AppSettings["ImageQRHeigth"]);
+        }
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult BuscarTodos(DTOServicio servicio)
+        {
+            List<DTOServicio> servicios = new List<DTOServicio>();
+            try
+            {
+                if (session.Usuario.USU_PERF_ADMINISTRADOR == false)
+                    if (session.Usuario.USU_SED_ID_SEDE != null)
+                        servicio.Sede.SED_ID_SEDE = (int)session.Usuario.USU_SED_ID_SEDE;
+
+                servicios = modelo.Buscar(servicio);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicios };
+        }
+
+        [HttpPost]
+        public JsonResult BuscarTodosFull(DTOServicio servicio)
+        {
+            List<DTOServicio> servicios = new List<DTOServicio>();
+            try
+            {
+                if (session.Usuario.USU_PERF_ADMINISTRADOR == false)
+                    if (session.Usuario.USU_SED_ID_SEDE != null)
+                        servicio.Sede.SED_ID_SEDE = (int)session.Usuario.USU_SED_ID_SEDE;
+
+                servicios = modelo.BuscarTodos(servicio);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicios };
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerTodos()
+        {
+            List<DTOServicio> servicios = new List<DTOServicio>();
+            try
+            {
+                servicios = modelo.ObtenerTodos();
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicios };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Guardar(DTOServicio servicio)
+        {
+            try
+            {
+                if (servicio == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "Datos inconsistentes";
+                }
+                else
+                    if (ModelState.IsValid)
+                    {
+                        servicio.SER_USU_ID_USUARIO = (int)session.Usuario.USU_ID_USUARIO;
+                        servicio = await modelo.Guardar(servicio);
+                        servicio = await modelo.ActualizaURL(servicio);
+                        Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.StatusDescription = "Datos inválidos : " + errors;
+                    }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicio };
+        }
+
+        public JsonResult ExisteServicio(string nombre, int id_edificio, int id_tipo)
+        {
+            DTOServicio servicio = new DTOServicio();
+            try
+            {
+                servicio = modelo.ExisteServicio(nombre, id_edificio, id_tipo);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicio };
+        }
+
+        public JsonResult BuscarId(int id)
+        {
+            DTOServicio servicio = new DTOServicio();
+            try
+            {
+                servicio = modelo.BuscarId(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicio };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                respuesta = await modelo.Eliminar(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+
+        public struct ImagenQRcode
+        {
+            public string URL, servicio;
+            public int width, heigth;
+
+            public ImagenQRcode(string _url, int _width, int _heigth, string _servicio)
+            {
+                URL = _url;
+                width = _width;
+                heigth = _heigth;
+                servicio = _servicio;
+            }
+        }
+
+        public JsonResult GeneraCodigoQR(int id)
+        {
+            ImagenQRcode imagenQR = new ImagenQRcode();
+            try
+            {
+                DTOServicio servicio = new DTOServicio();
+                servicio = modelo.BuscarId(id);
+
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(servicio.SER_URL, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+
+                using (Bitmap bitMap = qrCode.GetGraphic(20))
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                        imagenQR.servicio = servicio.SER_NOMBRE + " / " + servicio.EDI_NOMBRE + " / " + servicio.Sede.SED_NOMBRE;
+                        imagenQR.URL = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(ms.ToArray()));
+                        imagenQR.width = widthImage;
+                        imagenQR.heigth = heigthImage;
+                        
+                    }
+                }
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = imagenQR };
+        }
+
+        [HttpPost]
+        public JsonResult BuscarServicio(DTOServicio servicio)
+        {
+            try
+            {
+                servicio = modelo.BuscarId(servicio.SER_ID_SERVICIO);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicio };
+        }
+
+        [HttpPost]
+        public JsonResult ServicioFiltrosImagen(DTOServicio servicio)
+        {
+            try
+            {
+                Session["servicioImagen"] = servicio;
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new object[] { new object() } };
+        }
+
+        [HttpGet]
+        public ActionResult ImagenServicioToPNG()
+        {
+            System.Drawing.Image imgDRAW;
+
+            try
+            {
+                DTOServicio servicio = new DTOServicio();
+
+                if (Session["servicioImagen"] != null)
+                {
+                    servicio = (DTOServicio)Session["servicioImagen"];
+                    servicio = modelo.BuscarId(servicio.SER_ID_SERVICIO);
+
+                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(servicio.SER_URL, QRCodeGenerator.ECCLevel.Q);
+                    QRCode qrCode = new QRCode(qrCodeData);
+
+                    using (Bitmap bitMap = qrCode.GetGraphic(20))
+                    {
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                            imgDRAW = System.Drawing.Image.FromStream(ms);
+                            imgDRAW = resizeImage(imgDRAW, new Size(widthImage, heigthImage));
+
+                            byte[] fileBytes = imageToByteArray(imgDRAW);
+                            Session["servicioImagen"] = null;
+
+                            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "QRCodeImagen" + servicio.SER_ID_SERVICIO + ".png");
+                        }
+                    }
+
+
+                }
+
+                return View();
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ImagenServicioToPDF()
+        {
+            System.Drawing.Image imgDRAW;
+
+            try
+            {
+                DTOServicio servicio = new DTOServicio();
+
+                if (Session["servicioImagen"] != null)
+                {
+                    servicio = (DTOServicio)Session["servicioImagen"];
+                    servicio = modelo.BuscarId(servicio.SER_ID_SERVICIO);
+
+                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(servicio.SER_URL, QRCodeGenerator.ECCLevel.Q);
+                    QRCode qrCode = new QRCode(qrCodeData);
+
+                    using (Bitmap bitMap = qrCode.GetGraphic(30))
+                    {
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                            imgDRAW = System.Drawing.Image.FromStream(ms);
+                            imgDRAW = resizeImage(imgDRAW, new Size(widthImage, heigthImage));
+
+                            byte[] fileBytes = imageToByteArray(imgDRAW);
+                            Session["servicioImagen"] = null;
+
+                            //string base64 = Convert.ToBase64String(ms.ToArray());
+                            //byte[] imageBytes = Convert.FromBase64String(base64);
+                            iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(fileBytes);
+
+                            using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
+                            {
+                                iTextSharp.text.Document document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 25, 25, 30, 30);
+                                iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, memoryStream);
+                                image.SetAbsolutePosition(200, 500);
+                                document.Open();
+                                document.Add(image);
+                                document.Close();
+                                byte[] bytes = memoryStream.ToArray();
+                                memoryStream.Close();
+                                return File(bytes, System.Net.Mime.MediaTypeNames.Application.Pdf, "QRCodePDF" + servicio.SER_ID_SERVICIO + ".pdf");
+                            }
+                        }
+                    }
+
+
+                }
+
+                return View();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public byte[] imageToByteArray(System.Drawing.Image imageIn)
+        {
+            MemoryStream ms = new MemoryStream();
+            imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+            return ms.ToArray();
+        }
+
+        public static Image resizeImage(Image imgToResize, Size size)
+        {
+            return (Image)(new Bitmap(imgToResize, size));
+        }
+
+    }
+}

@@ -1,0 +1,66 @@
+﻿@*@model int?
+@section estilos{
+    @Styles.Render("~/content/evaluacion")
+    @Styles.Render("~/content/evaluacion2")
+}*@
+
+
+@Html.Partial("_HeaderEvaluacion")
+
+<div id="inicio">
+    <input id="hdIPDispositivo" type="hidden" />
+    <div id="content">
+        <div class="img-cuadro"><img src="~/Content/img/app/cuadro-.png" alt="Alternate Text" /></div>
+        <h1 class="dialogo_data"><strong>Evalúa el servicio de </strong><label id="txt_servicio"></label>/<label id="txt_lugar"></label>/<label id="txt_edificio"></label></h1>
+        <div class="borde-caritas">
+            <input type="hidden" id="idService" value=@Model />
+            <div class="panel" style="text-align:center">
+
+
+                <div class="row">
+                    <div class="col-xs-4 col-md-4">
+                        <label id="lbl_foto" for="fileUploadFoto" title="Bueno" class="upload-user img-caritas  dimensionesFoto user-upload">
+                            <img id="img-face-1" class="btnEvalBuena" src="~/Content/img/app/face-1.png" />
+                        </label>
+                    </div>
+
+                    <div class="col-xs-4 col-md-4">
+                        <label id="lbl_foto" for="fileUploadFoto" title="Regular" class="upload-user img-caritas  dimensionesFoto user-upload">
+                            <img id="img-face-2" class="btnEvalBuena" src="~/Content/img/app/face-2.png" />
+                        </label>
+                    </div>
+                    <div class="col-xs-4 col-md-4">
+                        <label id="lbl_foto" for="fileUploadFoto" title="Malo" class="upload-user img-caritas  dimensionesFoto user-upload">
+                            <img id="img-face-3" class="btnEvalBuena" src="~/Content/img/app/face-3.png" />
+                        </label>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        @*<div class="cod-pantalla"> </div>*@
+    </div>
+</div>
+<div id="termino">
+    <div id="content" style="text-align:center;">
+        <div class="img-cuadro"><img src="~/Content/img/app/cuadro-.png" alt="Alternate Text" /></div>
+        <img id="img-face-4" class="btnEvalBuena like" src="~/Content/img/app/icon-hand.png" />
+        <h1 class="dialogo_data"><label class="label-text"> ¡Gracias por evaluarnos!</label></h1>
+        <div class="borde-caritas">
+            <h1 style="color:#50c9ff;font-size: 28px; font-family:sans-serif; font-weight:500; text-transform:uppercase; color:#141414;">código</h1>
+            <label id="idRegistro" class="codigo"></label>
+            <p class="parrafo-link">Ingresa este código en <a href="http://evaluanos.aiep.cl">evaluanos.aiep.cl</a> y podrás optar a interesantes premios.</p>
+        </div>
+    </div>
+
+    </div>
+
+    @section scripts{
+        @Scripts.Render("~/js/evaluacion")
+    }
+@*@section pie{
+    <div class="cod-pantalla">SESC-F0007 v(1.1.2)</div>
+}*@

@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.DTO
+{
+    public class DTOEvaluacion
+    {
+
+        public int? EVA_ID_EVALUACION { get; set; }
+     
+        public int? EVA_SER_ID_SERVICIO { get; set; }
+     
+        public DateTime? EVA_FECHA_HORA { get; set; }
+      
+        public int? EVA_REGISTRO { get; set; }
+        
+        public string EVA_IDENTIFICACION_DISPOSITIVO { get; set; }
+      
+        public int EVA_NOTA { get; set; }
+        public DTOServicio Servicio { get; set; }
+
+        public DateTime? EVA_FECHA_INICIO { get; set; }
+        public DateTime? EVA_FECHA_TERMINO { get; set; }
+
+        public DTOEdificio Edificio { get; set; }
+        public DTOSede Sede { get; set; }
+        public DTOTipoServicio TipoServicio { get; set; }
+
+    }
+}

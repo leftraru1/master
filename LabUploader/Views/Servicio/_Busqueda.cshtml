@@ -1,0 +1,131 @@
+﻿<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-bell"></i> Servicios</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Código</label>
+                    <input type="text" id="txtCodigoFiltro" name="txtCodigoFiltro" class="form-control input-sm input-outer-trim habilitadoModifica numero" maxlength="10">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Nombre servicio</label>
+                    <input type="text" id="txtNombreFiltro" name="txtNombreFiltro" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="100">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Sede</label>
+                    <select id="cmbSedeFiltro" name="cmbSedeFiltro" class="form-control input-sm"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Edificio</label>
+                    <select id="cmbEdificioFiltro" name="cmbEdificioFiltro" class="form-control input-sm"></select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Categoría</label>
+                    <select id="cmbCategoriaFiltro" name="cmbCategoriaFiltro" class="form-control input-sm"></select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label ">Vigente</label>
+                    <div class="boton-switch">
+                        <input id="chkVigenteFiltro" name="chkVigenteFiltro" type="checkbox" class="switchery habilitadoModifica" data-theme="blue" checked disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-md-offset-8">
+                <button id="btnBuscar" type="button" name="btnBuscar" class="btn btn-round btn-sm btn-primary btn-block ">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Buscar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnNuevo" type="button" name="btnNuevo" class="btn btn-round btn-sm btn-primary btn-block ">
+                    <i class="fa fa-lg fa-fw fa-plus"></i>
+                    Nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default clearfix">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tbServicios" class="dataTableFull table table-condensed table-striped table-bordered nowrap display" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="hidden-lg hidden-md hidden-sm visible-xs firtscell"></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>CÓDIGO</th>
+                            <th>NOMBRE</th>
+                            <th>SEDE</th>
+                            <th>EDIFICIO</th>
+                            <th>CATEGORÍA</th>
+                            <th>FECHA CREACIÓN</th>
+                            <th>FECHA MODIFICACIÓN</th>
+                            <th>VIGENTE</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="ModalPopUp" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <h4 class="modal-title">Código QR</h4>
+            </div> 
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <img id="imgQRcode" alt="" class="img-responsive center-block" />
+                </div>
+                <div class="form-group">
+                    <h3 class="text-center">
+                        <label id="lblServicioQR" class="control-label"></label>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-4">
+                        <button id="btnDescargarPDF" type="button" name="btnDescargarPDF" class="btn btn-round btn-sm btn-danger btn-block ">
+                            <i class="glyphicon glyphicon-file"></i>
+                            Descargar PDF
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button id="btnDescargarPNG" type="button" name="btnDescargarPNG" class="btn btn-round btn-sm btn-danger btn-block ">
+                            <i class="glyphicon glyphicon-picture"></i>
+                            Descargar PNG
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

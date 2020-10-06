@@ -1,0 +1,74 @@
+﻿<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-download"></i> Descarga de Informes</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <form id="FormBusqueda">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="txtNombreUsuario">Nombre Usuario</label>
+                        <input type="text" id="txtNombreUsuario" name="txtNombreUsuario" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="10">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="txtNumeroInforme">Número de informe</label>
+                        <input type="text" id="txtNumeroInforme" name="txtNumeroInforme" class="form-control input-sm input-outer-trim habilitadoModifica numero" maxlength="100">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="txtFechaElaboracion" class="control-label ">Fecha de elaboración</label>
+                        <div class="input-group dateHoy">
+                            <input type="text" id="txtFechaElaboracion" name="txtFechaElaboracion" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="12">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-md-offset-8">
+                <button id="btnBuscar" type="button" name="btnBuscar" class="btn btn-round btn-sm btn-primary btn-block ">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Buscar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnLimpiar" type="button" name="btnLimpiar" class="btn btn-round btn-sm btn-success btn-block ">
+                    <i class="glyphicon glyphicon-refresh"></i>
+                    Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default clearfix">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tbFiles" class="dataTableFull table table-condensed table-striped table-bordered nowrap display" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="hidden-lg hidden-md hidden-sm visible-xs firtscell"></th>
+                            <th>
+                                <input type='checkbox' value='false' class='checkDownloadAll'>
+                            </th>
+                            <th>
+                                <a href='javascript:void(0);' data-id='0' class='fa fa-download fa-lg downloadSelected' data-toggle='tooltip' title='Descargar Seleccionados' data-original-title='Descargar Seleccionados'></a>
+                            </th>
+                            <th>NOMBRE DE USUARIO</th>
+                            <th>NÚMERO DE INFORME</th>
+                            <th>FECHA DE ELABORACIÓN</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

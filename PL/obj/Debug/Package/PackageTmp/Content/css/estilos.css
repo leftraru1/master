@@ -1,0 +1,700 @@
+/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the 
+ * later versions of this theme. 
+ * 
+ * We advise that you use use this CSS to override 
+ * SmartAdmin styles. 
+ * 
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+
+/*
+ * INDEX
+ * 
+ * - HTML
+ * - BODY
+ * - CUSTOM STYLES
+ */
+
+/* 5.5 Plugins - Datepicker */
+
+.datepicker table tr td.today,
+.datepicker table tr td.today:hover,
+.datepicker table tr td.today.disabled,
+.datepicker table tr td.today.disabled:hover {
+    background: #eee !important;
+}
+
+.datepicker table tr td.active:hover,
+.datepicker table tr td.active:hover:hover,
+.datepicker table tr td.active.disabled:hover,
+.datepicker table tr td.active.disabled:hover:hover,
+.datepicker table tr td.active:focus,
+.datepicker table tr td.active:hover:focus,
+.datepicker table tr td.active.disabled:focus,
+.datepicker table tr td.active.disabled:hover:focus,
+.datepicker table tr td.active:active,
+.datepicker table tr td.active:hover:active,
+.datepicker table tr td.active.disabled:active,
+.datepicker table tr td.active.disabled:hover:active,
+.datepicker table tr td.active.active,
+.datepicker table tr td span.active.active,
+.datepicker table tr td.active:hover.active,
+.datepicker table tr td.active.disabled.active,
+.datepicker table tr td.active.disabled:hover.active,
+.open .dropdown-toggle.datepicker table tr td.active,
+.open .dropdown-toggle.datepicker table tr td.active:hover,
+.open .dropdown-toggle.datepicker table tr td.active.disabled,
+.open .dropdown-toggle.datepicker table tr td.active.disabled:hover {
+    background: #348fe2 !important;
+    color: #fff !important;
+}
+
+.datepicker {
+    min-width: 250px !important;
+    -webkit-border-radius: 3px !important;
+    -moz-border-radius: 3px !important;
+    border-radius: 3px !important;
+}
+
+    .datepicker.dropdown-menu {
+        min-width: 250px;
+        border: 1px solid #ddd !important;
+        -webkit-box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.2) !important;
+        -moz-box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.2) !important;
+    }
+
+.datepicker-dropdown:before {
+    border-bottom-color: #ddd !important;
+}
+
+.datepicker-dropdown.datepicker-orient-bottom:before {
+    border-top-color: #ddd !important;
+}
+
+.datepicker table {
+    width: 100%;
+}
+
+.input-daterange .input-group-addon {
+    background: #d6d8dd !important;
+    border: none !important;
+    text-shadow: none !important;
+}
+
+.irs-from, .irs-to, .irs-single {
+    background: #023765 !important;
+}
+
+.datepicker-full-width .datepicker-inline {
+    width: 100%;
+}
+
+#mobile-profile-img {
+    display: inherit !important;
+}
+
+.cod-pantalla {
+    background: white;
+    padding: 5px 6px;
+    width: 170px;
+    float: right;
+    text-align: right;
+    margin-right: 30px;
+}
+
+#page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(3,3,3,0.1);
+    z-index: 9999;
+}
+
+    #page-loader.fade {
+        display: none;
+    }
+
+        #page-loader.fade.in {
+            display: block;
+        }
+
+@-webkit-keyframes rotation {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(359deg);
+    }
+}
+
+@-moz-keyframes rotation {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(359deg);
+    }
+}
+
+@-o-keyframes rotation {
+    from {
+        -o-transform: rotate(0deg);
+    }
+
+    to {
+        -o-transform: rotate(359deg);
+    }
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+.modal-block-content {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 100000;
+}
+
+.modal-block {
+    /*background: #000;*/
+    top: 40%;
+    left: 30%;
+    width: 40%;
+    position: absolute;
+    height: 100px;
+    z-index: 100001;
+    border: none;
+    padding: 15px;
+    background-color: #000;
+    border-radius: 10px;
+    -webkit-border-radius: '10px';
+    -moz-border-radius: '10px';
+    color: #fff;
+    opacity: 0.5;
+}
+
+    .modal-block .texto {
+        color: #FFF;
+        font-size: 15px;
+        margin: -20px 0 0 -20px;
+        text-align: center;
+        vertical-align: bottom;
+        position: relative;
+        top: 60px;
+        left: 46%;
+    }
+
+.spinner,
+.spinner-small {
+    height: 40px;
+    width: 40px;
+    margin: 0px auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -20px 0 0 -20px;
+    border: 2px solid #fff;
+    border-top: 2px solid #24B498;
+    border-radius: 100%;
+}
+
+.fade.in .spinner,
+.fade.in .spinner-small {
+    -webkit-animation: rotation .6s infinite linear;
+    -moz-animation: rotation .6s infinite linear;
+    -o-animation: rotation .6s infinite linear;
+    animation: rotation .6s infinite linear;
+}
+
+.spinner-small {
+    border: 2px solid rgba(0,0,0,0.05);
+    border-top: 2px solid #24B498;
+    height: 30px;
+    width: 30px;
+    margin: -15px 0 0 -15px;
+}
+
+.dataTableFull {
+    width: 100% !important;
+}
+
+table.dataTable thead .sorting_asc.ocultaOrden, table.dataTable thead .sorting_desc.ocultaOrden {
+    background: none;
+}
+
+div.dataTables_wrapper div div div.dataTables_filter, div.dataTables_wrapper div div div.dataTables_paginate {
+    float: right;
+}
+
+    div.dataTables_wrapper div div div.dataTables_filter label input[type="search"] {
+        margin-left: 10px;
+    }
+
+.dataTable tbody tr td.dataTables_empty {
+    text-align: center;
+}
+
+div.dataTables_filter input {
+    margin-left: 13px;
+}
+
+.datatable-fix-alignment-filter {
+    padding-right: 0px !important;
+}
+
+/*.dataTable thead tr th {
+    white-space: nowrap;
+}*/
+
+table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dt-icono:first-child, table.dataTable.dtr-inline.collapsed > thead > tr[role="row"] > th:first-child, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dt-icono:first-child {
+    width: 10px !important;
+}
+
+textarea.form-control {
+    resize: none;
+    height: 60px;
+}
+
+.ocultar {
+    display: none;
+}
+
+.fileupload-contenedor {
+    color: white !important;
+    display: block;
+    margin-top: 4px;
+}
+
+    .fileupload-contenedor input[type="file"] {
+        display: none;
+    }
+
+.btn-round {
+    border-radius: 30px;
+    /*text-transform: uppercase !important;*/
+    margin: 5px 0;
+}
+
+.btn-buscar {
+    padding-top: 5px;
+}
+
+.btn-default.disabled {
+    background: #eee !important;
+}
+
+#map {
+    height: 500px;
+    margin-top: 20px;
+}
+
+.has-error div.bootstrap-select button[type="button"].dropdown-toggle {
+    border-color: #b94a48;
+}
+
+.calendario-full-ajustado {
+    display: block;
+    position: relative;
+    height: 228px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+    .calendario-full-ajustado .datepicker {
+        width: 100%;
+    }
+
+
+        .calendario-full-ajustado .datepicker table {
+            width: 100%;
+            position: relative;
+            font-size: x-small;
+        }
+
+            .calendario-full-ajustado .datepicker table tbody {
+                border-top: 1px solid #ccc;
+            }
+
+            .calendario-full-ajustado .datepicker table tfoot tr th.clear {
+                background-color: #ccc;
+            }
+
+.dataTable {
+    width: 100% !important;
+}
+
+    .dataTable tbody tr td input[type="text"], .noDataTable tbody tr td input[type="text"] {
+        width: 100%;
+    }
+
+.menu-on-top .menu-item-parent {
+    max-width: 110px;
+    min-width: 90px;
+}
+
+.bootstrap-duallistbox-container .box1 .btn-group button.move {
+    float: right;
+}
+
+.box2.has-error label:first-child, .box2.has-error .error-spam {
+    color: #b94a48;
+}
+
+.box2.has-error select {
+    border-color: #b94a48;
+    width: 99.8%;
+    position: relative;
+}
+
+#mobile-profile-img a.userdropdown img {
+    margin-top: 6px;
+    height: 28px;
+}
+
+.icono-personalizado{
+    position: relative;
+    top: 2px;
+    display: inline-block;
+    width: 13px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.excel-icon {
+    content: url(/content/img/excel-icon.png);
+    background-position: center !important;
+}
+
+.btn-excel {
+    color: #fff;
+    background-color: #4ea24a;
+    border-color: #61b150;
+}
+
+    .btn-excel.active, .btn-excel.focus, .btn-excel:active, .btn-excel:focus, .btn-excel:hover, .open > .dropdown-toggle.btn-excel {
+        color: #fff;
+        background-color: #207347;
+        border-color: #057634;
+    }
+
+    .btn-excel.active, .btn-excel:active, .open > .dropdown-toggle.btn-excel {
+        background-image: none;
+    }
+
+    .btn-excel.disabled, .btn-excel.disabled.active, .btn-excel.disabled.focus, .btn-excel.disabled:active, .btn-excel.disabled:focus, .btn-excel.disabled:hover, .btn-excel[disabled], .btn-excel[disabled].active, .btn-excel[disabled].focus, .btn-excel[disabled]:active, .btn-excel[disabled]:focus, .btn-excel[disabled]:hover, fieldset[disabled] .btn-excel, fieldset[disabled] .btn-excel.active, fieldset[disabled] .btn-excel.focus, fieldset[disabled] .btn-excel:active, fieldset[disabled] .btn-excel:focus, fieldset[disabled] .btn-excel:hover {
+        background-color: #4ea24a;
+        border-color: #61b150;
+    }
+
+    .btn-excel .badge {
+        color: #4ea24a;
+        background-color: #fff;
+    }
+
+.csv-icon {
+    content: url(/content/img/csv-icon.png);
+    background-position: center !important;
+}
+
+.btn-csv {
+    color: #fff;
+    background-color: #4ea24a;
+    border-color: #61b150;
+}
+
+    .btn-csv.active, .btn-csv.focus, .btn-csv:active, .btn-csv:focus, .btn-csv:hover, .open > .dropdown-toggle.btn-csv {
+        color: #fff;
+        background-color: #207347;
+        border-color: #057634;
+    }
+
+    .btn-csv.active, .btn-csv:active, .open > .dropdown-toggle.btn-csv {
+        background-image: none;
+    }
+
+    .btn-csv.disabled, .btn-csv.disabled.active, .btn-csv.disabled.focus, .btn-csv.disabled:active, .btn-csv.disabled:focus, .btn-csv.disabled:hover, .btn-csv[disabled], .btn-csv[disabled].active, .btn-csv[disabled].focus, .btn-csv[disabled]:active, .btn-csv[disabled]:focus, .btn-csv[disabled]:hover, fieldset[disabled] .btn-csv, fieldset[disabled] .btn-csv.active, fieldset[disabled] .btn-csv.focus, fieldset[disabled] .btn-csv:active, fieldset[disabled] .btn-csv:focus, fieldset[disabled] .btn-csv:hover {
+        background-color: #4ea24a;
+        border-color: #61b150;
+    }
+
+    .btn-csv .badge {
+        color: #4ea24a;
+        background-color: #fff;
+    }
+
+.pdf-icon {
+    content: url(/content/img/pdf-icon.png);
+    background-position: center !important;
+}
+
+.btn-pdf {
+    color: #fff;
+    background-color: #ef4036;
+    border-color: #da1f26;
+}
+
+    .btn-pdf.active, .btn-pdf.focus, .btn-pdf:active, .btn-pdf:focus, .btn-pdf:hover, .open > .dropdown-toggle.btn-pdf {
+        color: #fff;
+        background-color: #da1f26;
+        border-color: #85080e;
+    }
+
+    .btn-pdf.active, .btn-pdf:active, .open > .dropdown-toggle.btn-pdf {
+        background-image: none;
+    }
+
+    .btn-pdf.disabled, .btn-pdf.disabled.active, .btn-pdf.disabled.focus, .btn-pdf.disabled:active, .btn-pdf.disabled:focus, .btn-pdf.disabled:hover, .btn-pdf[disabled], .btn-pdf[disabled].active, .btn-pdf[disabled].focus, .btn-pdf[disabled]:active, .btn-pdf[disabled]:focus, .btn-pdf[disabled]:hover, fieldset[disabled] .btn-pdf, fieldset[disabled] .btn-pdf.active, fieldset[disabled] .btn-pdf.focus, fieldset[disabled] .btn-pdf:active, fieldset[disabled] .btn-pdf:focus, fieldset[disabled] .btn-pdf:hover {
+        background-color: #ef4036;
+        border-color: #da1f26;
+    }
+
+    .btn-pdf .badge {
+        color: #ef4036;
+        background-color: #fff;
+    }
+/*.img-caritas {
+	border-radius: 50%;
+	-webkit-box-shadow: 2px 0px 26px 0px rgba(193, 193, 193, 0.31);
+	-moz-box-shadow: 2px 0px 26px 0px rgba(0,0,0,0.31);
+	box-shadow: 2px 0px 26px 0px rgba(123, 123, 123, 0.31);
+}*/
+.borde-caritas {
+	border-radius: 30px;
+	margin-top: 40px;
+	padding: 30px;
+	width: 100%;
+	-webkit-box-shadow: 2px 0px 26px 0px rgba(232, 232, 232, 0.31);
+	-moz-box-shadow: 2px 0px 26px 0px rgba(0,0,0,0.31);
+	box-shadow: 2px 0px 26px 0px rgba(185, 185, 185, 0.31);
+}
+.sombra-caritas {
+  position:relative;
+    float:left;
+    width:40%;
+    padding:1em;
+    margin:2em 10px 4em;
+    background:#fff;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3),0 0 40px rgba(0, 0, 0, 0.1) inset;
+    -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+     #header_claro {
+        height: 170px;
+        background: url(/content/img/app/banner-claro.png); 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        position: relative;
+        z-index: 905;
+        display: block;
+    }
+
+    #content-header_claro {
+        position: fixed;
+        width: 100%;
+        margin: 10px 0 0 0;
+    }
+
+    #content-header_claro-label {
+        position: fixed;
+        width: 100%;
+        height: 100px;
+        margin-top:50px;  
+
+        color: #fff;
+        font-size: xx-large;
+        font-weight: bold;
+    }
+.dialogo_data {
+    letter-spacing: 4px;
+    background: #fff;
+    margin: auto;
+    padding: 10px;
+    color: #212a42;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.img-cuadro {
+
+    display:none;
+    text-align: center;
+}
+
+.label-text {
+
+    font-size: xx-large;
+    font-weight: bold;
+    color: #56cbff;
+}
+
+
+.codigo {
+    
+    letter-spacing: 14px;
+    background: #e4fafd;
+    color: #162642;
+    padding: 10px;
+    font-weight: 500;
+    font-family:sans-serif !important;
+   font-size: xx-large;
+}
+
+.parrafo-link {
+    font-size: medium;
+    font-weight: bold;
+    font-family:sans-serif !important;
+
+}
+
+
+#txt_servicio, #txt_lugar, #txt_edificio {
+
+    font-weight: bold !important;
+}
+
+@media (max-width:1366px) {
+    .img-cuadro {
+        
+        display: block;
+        width: 450px;
+        margin: auto;
+        text-align: center;
+    }
+
+}
+
+@media (max-width:768px) {
+
+    .dialogo_data {
+        width: 100%;
+        letter-spacing: 1px;
+        margin-top: 0em;
+        margin-bottom: 1em;
+        font-family:sans-serif;
+    }
+
+    #img-face-1, #img-face-2, #img-face-3 {
+        width: 200px;
+        padding: 8px;
+    }
+
+    .img-cuadro {
+        display: block;
+        text-align: center;
+    }
+
+
+    .borde-caritas {
+
+        padding: 7px;
+        margin-top: 0px;
+        padding-bottom: 13px;
+        border-radius: 9px;
+        webkit-box-shadow: 2px 0px 26px 0px rgba(232, 232, 232, 0.31);
+    -moz-box-shadow: 2px 0px 26px 0px rgba(0,0,0,0.31);
+    box-shadow: 2px 0px 26px 0px rgba(66, 66, 66, 0.31);
+    }
+
+    .like {
+        margin-top: -2em;
+        width: 60px !important;
+    }
+  
+  }
+ @media (max-width:736px) {
+
+    #img-face-1, #img-face-2, #img-face-3 {
+
+        width:100%;
+    }
+ }
+
+@media (max-width:414px) {
+    .dialogo_data {
+        width: 100%;
+        font-size: 18px;
+        font-family:sans-serif !important;
+    }
+
+    #header_claro {
+        height: 121px;
+    }
+
+
+	.btnEvalBuena {
+
+		width:80px;
+	}
+    b  
+	#header_claro {
+
+		height: 110px;
+	}
+
+	.img-aiep {
+
+		width:100px !important;
+	}
+
+    .img-cuadro {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+}
+
+@media (max-width: 375px) {
+
+    #header_claro {
+        height: 121px;
+    }
+
+    .img-cuadro {
+        width: 100%;
+        text-align: center;
+    }
+    
+}
+
+  /*medidas landscape*/
+
+
+@media (max-width: 818px){
+
+     #img-face-1, #img-face-2, #img-face-3 {
+     width: 80%;
+   }
+
+}
+
+@media (max-width: 823px) {
+
+     #img-face-1, #img-face-2, #img-face-3 {
+         width: 80%;
+     }
+}
+
+
+@media (max-width: 320px) {
+
+     #img-face-1, #img-face-2, #img-face-3 {
+         width: 100%;
+     }
+}

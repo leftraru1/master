@@ -1,0 +1,101 @@
+﻿using AutoMapper;
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using EL.DTO;
+using EL.Entidades;
+
+namespace BL.Modelos
+{
+    public class MTipoServicio
+    {
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MTipoServicio()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public List<DTOTipoServicio> ObtenerTodos()
+        {
+            List<DTOTipoServicio> tipoServicioList = new List<DTOTipoServicio>();
+            List<TipoServicio> datos = unitOfWork.TipoServicioRepo.GetAll().ToList();
+
+            mapper.Map<List<TipoServicio>, List<DTOTipoServicio>>(datos, tipoServicioList);
+
+            return tipoServicioList;
+        }
+
+        public async Task<DTOTipoServicio> Guardar(DTOTipoServicio entidad)
+        {
+            TipoServicio tipoServicio = new TipoServicio();
+            entidad.TIP_FECHA_ACTUALIZACION = DateTime.Now;
+
+            if (entidad.TIP_ID_TIPO_SERVICIO != 0)
+            {
+                tipoServicio = unitOfWork.TipoServicioRepo.GetAll(t => t.TIP_ID_TIPO_SERVICIO == entidad.TIP_ID_TIPO_SERVICIO).FirstOrDefault();
+                mapper.Map<DTOTipoServicio, TipoServicio>(entidad, tipoServicio);
+                unitOfWork.TipoServicioRepo.Update(tipoServicio);
+            }
+            else
+            {
+                tipoServicio = mapper.Map<DTOTipoServicio, TipoServicio>(entidad);
+                unitOfWork.TipoServicioRepo.Create(tipoServicio);
+            }
+
+            await unitOfWork.Save();
+            entidad.TIP_ID_TIPO_SERVICIO = tipoServicio.TIP_ID_TIPO_SERVICIO;
+
+            return entidad;
+        }
+
+        public List<DTOTipoServicio> Buscar(DTOTipoServicio filtro)
+        {
+            List<DTOTipoServicio> tiposServicio = new List<DTOTipoServicio>();
+
+            List<TipoServicio> datos = unitOfWork.TipoServicioRepo.GetAll(x => (x.TIP_ID_TIPO_SERVICIO == filtro.TIP_ID_TIPO_SERVICIO || filtro.TIP_ID_TIPO_SERVICIO == 0)
+                                                                        && (x.TIP_NOMBRE.Contains(filtro.TIP_NOMBRE) || filtro.TIP_NOMBRE == null)
+                                                                        && (x.TIP_VIGENTE == filtro.TIP_VIGENTE)).ToList();
+
+            mapper.Map<List<TipoServicio>, List<DTOTipoServicio>>(datos, tiposServicio);
+
+            return tiposServicio;
+        }
+
+        public DTOTipoServicio BuscarId(int id)
+        {
+            DTOTipoServicio tipoServicio = new DTOTipoServicio();
+            TipoServicio dato = unitOfWork.TipoServicioRepo.GetAll(t => t.TIP_ID_TIPO_SERVICIO == id).FirstOrDefault();
+
+            if (dato != null)
+                tipoServicio = mapper.Map<TipoServicio, DTOTipoServicio>(dato);
+
+            return tipoServicio;
+
+        }
+        public bool IsDeleted(int id)
+        {
+            Servicio servicio = unitOfWork.ServicioRepo.GetAll(x => x.SER_TIP_ID_TIPO_SERVICIO == id).FirstOrDefault();
+            if (servicio == null)
+                return true;
+            return false;
+        }
+        public async Task Eliminar(int id)
+        {
+            try
+            {
+                unitOfWork.TipoServicioRepo.DeleteAll(t => t.TIP_ID_TIPO_SERVICIO == id);
+                await unitOfWork.Save();
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+
+        }
+    }
+}

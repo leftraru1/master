@@ -1,0 +1,134 @@
+﻿using AutoMapper;
+using DAL;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Configuration;
+
+namespace BL.Modelos
+{
+    public class MEvaluacion
+    {
+
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MEvaluacion()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public DTOServicio Buscar(DTOServicio entidad)
+        {
+            Servicio collection = new Servicio();
+            DTOServicio p = new DTOServicio();
+            try
+            {
+                collection = unitOfWork.ServicioRepo.GetAll(x => x.SER_ID_SERVICIO == entidad.SER_ID_SERVICIO, includeProperties: "Edificio.Sede,TipoServicio").FirstOrDefault();
+                 p = mapper.Map<Servicio, DTOServicio>(collection);
+                
+
+            }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            
+            return p;
+
+        }
+
+        public async Task<DTORespuesta> Guardar(DTOEvaluacion entidad)
+        {
+            DTORespuesta Respuesta = new DTORespuesta();
+            try
+            {
+                bool evaluado = false;
+                Evaluacion dato = new Evaluacion();
+                string minutos = WebConfigurationManager.AppSettings["PausaEvalServicio"];
+                List<Evaluacion> ultimos = unitOfWork.EvaluacionRepo.GetAll(d => d.EVA_IDENTIFICACION_DISPOSITIVO == entidad.EVA_IDENTIFICACION_DISPOSITIVO
+                                                                                 && d.EVA_SER_ID_SERVICIO == entidad.EVA_SER_ID_SERVICIO
+                                                                            ).ToList();
+                if (ultimos.Count > 0)
+                {
+                    DateTime ingreso = ultimos.Max(x => x.EVA_FECHA_HORA);
+                    DateTime regla = ingreso.AddMinutes((Convert.ToDouble(minutos)));
+                    DateTime actual = DateTime.Now;
+                    if (regla > actual)
+                    {
+                        Respuesta.Resultado = false;
+                        Respuesta.Mensaje = "Servicio ya fue evaluado, debe esperar " + minutos + " minutos para volver a evaluar";
+                        evaluado = true;
+                    }
+                       
+                }
+
+                int registro = 10000;
+                if (evaluado == false)
+                {
+                    if (entidad.EVA_SER_ID_SERVICIO > 0)
+                    {
+                        registro = ((unitOfWork.EvaluacionRepo.GetAll().Count() > 0) ? (unitOfWork.EvaluacionRepo.GetAll().Max(d => d.EVA_REGISTRO) + 1) : 1);
+                        if (registro == 1)
+                            registro = 10000;
+
+                        entidad.EVA_REGISTRO = registro;
+                        dato = mapper.Map<DTOEvaluacion, Evaluacion>(entidad);
+                        unitOfWork.EvaluacionRepo.Create(dato);
+
+                    }
+
+                    await unitOfWork.Save();
+                    Respuesta.Resultado = true;
+                    Respuesta.Mensaje = "Evalución Ingresada Correctamente";
+                }
+                else
+                {
+                    Random rnd = new Random();
+                    registro = rnd.Next(1000, 9999);
+                }
+
+                Respuesta.Elemento = registro;
+            }
+            catch (Exception ex)
+            {
+                Respuesta.Resultado = false;
+                Respuesta.Mensaje = ex.ToString();
+            }
+
+            return Respuesta;
+        }
+
+        public List<DTOEvaluacion> Buscar(DTOEvaluacion filtro)
+        {
+            List<DTOEvaluacion> evaluaciones = new List<DTOEvaluacion>();
+
+            List<Evaluacion> datos = unitOfWork.EvaluacionRepo.GetAll(x => ((x.EVA_FECHA_HORA >= filtro.EVA_FECHA_INICIO && x.EVA_FECHA_HORA <= filtro.EVA_FECHA_TERMINO) 
+                                                                           || (filtro.EVA_FECHA_INICIO == null && filtro.EVA_FECHA_TERMINO == null))
+                                                                           && (x.EVA_SER_ID_SERVICIO == filtro.EVA_SER_ID_SERVICIO || filtro.EVA_SER_ID_SERVICIO == null)
+                                                                    , includeProperties: "Servicio, Servicio.TipoServicio, Servicio.Edificio, Servicio.Edificio.Sede").ToList();
+
+            mapper.Map<List<Evaluacion>, List<DTOEvaluacion>>(datos, evaluaciones);
+            
+
+            if (filtro.Sede.SED_ID_SEDE > 0)
+                evaluaciones = evaluaciones.FindAll(x => x.Sede.SED_ID_SEDE == filtro.Sede.SED_ID_SEDE);
+
+            if (filtro.Edificio.EDI_ID_EDIFICIO > 0)
+                evaluaciones = evaluaciones.FindAll(x => x.Edificio.EDI_ID_EDIFICIO == filtro.Edificio.EDI_ID_EDIFICIO);
+
+            if (filtro.TipoServicio.TIP_ID_TIPO_SERVICIO > 0)
+                evaluaciones = evaluaciones.FindAll(x => x.TipoServicio.TIP_ID_TIPO_SERVICIO == filtro.TipoServicio.TIP_ID_TIPO_SERVICIO);
+
+            evaluaciones = evaluaciones.OrderByDescending(p => p.EVA_FECHA_HORA).ToList();
+
+            return evaluaciones;
+        }
+
+    }
+}

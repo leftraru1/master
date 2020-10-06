@@ -1,0 +1,21 @@
+﻿<header id="header" class="row">
+    <div id="logo-group" class="col-md-5">
+        <img id="logo-aiep" src="~/Content/img/app/logo-aiep.png" />
+        <img id="logo-corporation" src="~/Content/img/app/logo-corporation.png" />
+    </div>
+    <div id="text-header-title" class="col-md-6 col-md-offset-1 hidden-xs hidden-sm">
+        SISTEMA DE EVALUACIÓN DE SERVICIOS COMPLEMENTARIOS
+    </div>
+    <section id="top-right">
+        @if (@Model is HelperResult)
+        {
+            @Model
+        }
+        else
+        {
+            <div class="pull-right-full">
+                @Html.Partial("_TopRight")
+            </div>
+        }
+    </section>
+</header>

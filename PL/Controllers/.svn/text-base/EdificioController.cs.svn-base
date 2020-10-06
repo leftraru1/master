@@ -1,0 +1,181 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using BL.Modelos;
+using EL.DTO;
+using System.Net;
+using System.Threading.Tasks;
+using PL.Models;
+using System.Configuration;
+using ClosedXML.Excel;
+using System.IO;
+using System.Text;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Drawing;
+
+using System.Data;
+using ColaboradoresAiep.Crypto;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class EdificioController : Controller
+    {
+        // GET: Edificio
+        public MEdificio modelo { get; set; }
+        public MSede modelo_sede { get; set; }
+        DTOSessionUsuario session = (DTOSessionUsuario)MSession.ReturnSessionObject();
+
+        public EdificioController()
+        {
+            modelo = new MEdificio();
+            modelo_sede = new MSede();
+        }
+
+        public ActionResult Index()
+        {
+            
+            string conn = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            string codigoSistema = System.Web.Configuration.WebConfigurationManager.AppSettings["WScodigoSistema"];
+            codigoSistema = Encriptador.Encriptar(codigoSistema);
+
+            DTORespuesta respuesta = new DTORespuesta();
+            respuesta = modelo_sede.BulkInsert(conn, codigoSistema);
+
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerTodos()
+        {
+            List<DTOEdificio> edificios = new List<DTOEdificio>();
+            try
+            {
+                edificios = modelo.ObtenerTodos();
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = edificios };
+        }
+
+        [HttpPost]
+        public JsonResult BuscarTodos(DTOEdificio edificio)
+        {
+            List<DTOEdificio> edificios = new List<DTOEdificio>();
+            try
+            {
+                if (session.Usuario.USU_PERF_ADMINISTRADOR == false)
+                    if (session.Usuario.USU_SED_ID_SEDE != null)
+                        edificio.EDI_SED_ID_SEDE = (int)session.Usuario.USU_SED_ID_SEDE;
+
+                edificios = modelo.Buscar(edificio);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = edificios };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Guardar(DTOEdificio edificio)
+        {
+            try
+            {
+                if (edificio == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "Datos inconsistentes";
+                }
+                else
+                    if (ModelState.IsValid)
+                    {
+                        edificio.EDI_USU_ID_USUARIO = (int)session.Usuario.USU_ID_USUARIO;
+                        edificio = await modelo.Guardar(edificio);
+                        Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.StatusDescription = "Datos inválidos : " + errors;
+                    }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = edificio };
+        }
+        
+        public JsonResult BuscarId(int id)
+        {
+            DTOEdificio edificio = new DTOEdificio();
+            try
+            {
+                edificio = modelo.BuscarId(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = edificio };
+        }
+
+        public JsonResult ExisteEdificio(string nombre, int id_sede)
+        {
+            DTOEdificio edificio = new DTOEdificio();
+            try
+            {
+                edificio = modelo.ExisteEdificio(nombre, id_sede);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = edificio };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Eliminar(int id)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                respuesta = await modelo.Eliminar(id);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+
+    }
+}

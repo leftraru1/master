@@ -1,0 +1,94 @@
+﻿using AutoMapper;
+using DAL;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+
+namespace BL.Modelos
+{
+    public class MSession
+    {
+
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+        private BL.Utilidades.DESEncrypt encriptacion { get; set; }
+        public MLogin modelo { get; set; }
+
+        public MSession()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+            encriptacion = new Utilidades.DESEncrypt();
+            modelo = new MLogin();
+        }
+
+        public DTORespuesta ValidaLogin(DTOLogin login)
+        {
+            DTORespuesta respuesta = modelo.ValidaLogin(login);
+
+            if ((bool)respuesta.Resultado)
+            {
+                DTOUsuario user = mapper.Map<DTOUsuario, DTOUsuario>((DTOUsuario)respuesta.Elemento);
+
+                Usuario usuario = unitOfWork.UsuarioRepo.GetAll(u => u.USU_ID_USUARIO == user.USU_ID_USUARIO, includeProperties: "Perfil, Sede").FirstOrDefault();
+                int USU_PERF_ID_PERFIL = (int)usuario.USU_PERF_ID_PERFIL;
+
+                DTOSessionUsuario sess = new DTOSessionUsuario();
+                usuario.USU_NOMBRE_COMPLETO = user.USU_NOMBRE_COMPLETO;
+                sess.Usuario = mapper.Map<Usuario, DTOUsuario>(usuario);
+                sess.Funcionalidades = mapper.Map<List<Funcionalidad>, List<DTOFuncionalidad>>(unitOfWork.FuncionalidadRepo.GetAll(f => f.Perfiles.Any(p => p.Perfil.PERF_ID == USU_PERF_ID_PERFIL)).ToList());
+
+                UrlHelper url = new UrlHelper(System.Web.HttpContext.Current.Request.RequestContext);
+
+                RegisterSession(sess);
+            }
+
+            return respuesta;
+        }
+
+        private static void RegisterSession(DTOSessionUsuario sess)
+        {
+            System.Web.HttpContext.Current.Session["UsuarioSess"] = sess;
+        }
+
+        public static void FreeSession()
+        {
+            System.Web.HttpContext.Current.Session["UsuarioSess"] = null;
+            System.Web.HttpContext.Current.Session.RemoveAll();
+            System.Web.HttpContext.Current.Session.Clear();
+        }
+
+        public static bool CheckSession()
+        {
+            if (System.Web.HttpContext.Current.Session["UsuarioSess"] != null)
+                return true;
+            else
+                return false;
+        }
+
+        public static object ReturnSessionObject()
+        {
+            if (CheckSession())
+                return System.Web.HttpContext.Current.Session["UsuarioSess"];
+            else
+                return null;
+        }
+
+        public static bool isAjaxCall()
+        {
+
+            if (System.Web.HttpContext.Current.Request.Headers["X-Requested-With"] != null &&
+                !string.IsNullOrWhiteSpace(System.Web.HttpContext.Current.Request.Headers["X-Requested-With"]))
+                return true;
+            else
+                return false;
+
+        }
+        
+    }
+}

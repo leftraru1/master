@@ -1,0 +1,144 @@
+10
+
+dir
+316
+svn://10.40.190.25/AIEP-Caritas/Sistema/Fuentes/Sitio%20Web/desarrollo/PL/Views
+svn://10.40.190.25/AIEP-Caritas
+
+
+
+2018-10-24T15:44:49.176375Z
+309
+ralmendras
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+bad46e1f-72c4-b144-846d-bb2e06406f88
+
+Partials
+dir
+
+Sede
+dir
+
+_ViewStart.cshtml
+file
+
+
+
+
+2018-10-09T13:32:57.594899Z
+8658de0f3b50e65bb730c62fbd05b061
+2018-10-04T19:39:57.063750Z
+102
+fvaldes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+205
+
+Perfil
+dir
+
+web.config
+file
+
+
+
+
+2018-10-03T12:07:45.862364Z
+b105308c118c23199cdb8e61cc6b033e
+2018-10-02T21:22:05.048125Z
+71
+ralmendras
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2085
+
+Servicio
+dir
+
+Upload
+dir
+
+Evaluacion
+dir
+
+Usuario
+dir
+
+Home
+dir
+
+Account
+dir
+
+Resultado
+dir
+
+CategoriaServicio
+dir
+
+Shared
+dir
+
+CodigoQR
+dir
+
+Login
+dir
+
+Edificio
+dir
+
+ExportacionExcel
+dir
+

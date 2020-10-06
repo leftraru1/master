@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.Entidades
+{
+    [Table("SESC_EDIFICIO")]
+    public class Edificio
+    {
+
+        [Key]
+        public int EDI_ID_EDIFICIO { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string EDI_NOMBRE { get; set; }
+
+        [Required]
+        [DataType(DataType.Time)]
+        public DateTime EDI_FECHA_CREACION { get; set; }
+
+        public bool? EDI_VIGENTE { get; set; }
+
+        [DataType(DataType.Time)]
+        public DateTime? EDI_FECHA_ACTUALIZACION { get; set; }
+
+        //public int SED_ID_SEDE { get; set; }
+        public int EDI_SED_ID_SEDE { get; set; }
+        [ForeignKey("EDI_SED_ID_SEDE")]
+        public Sede Sede { get; set; }
+
+        //public int USU_ID { get; set; }
+        public int EDI_USU_ID_USUARIO { get; set; }
+        [ForeignKey("EDI_USU_ID_USUARIO")]
+        public Usuario Usuario { get; set; }
+
+        public IList<Servicio> Servicios { get; set; }
+
+    }
+}

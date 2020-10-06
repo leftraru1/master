@@ -1,0 +1,5 @@
+D:\Repositorios\SBIO0001-CMTTO\F - CMTTO_PORTAL\Codigo Fuente\Essbio.SUL\bin\dfsdfg\Essbio.SUL.dll
+D:\Repositorios\SBIO0001-CMTTO\F - CMTTO_PORTAL\Codigo Fuente\Essbio.SUL\obj\dfsdfg\Essbio.SUL.Resources.resources
+D:\Repositorios\SBIO0001-CMTTO\F - CMTTO_PORTAL\Codigo Fuente\Essbio.SUL\obj\dfsdfg\Essbio.SUL.vbproj.GenerateResource.Cache
+D:\Repositorios\SBIO0001-CMTTO\F - CMTTO_PORTAL\Codigo Fuente\Essbio.SUL\obj\dfsdfg\Essbio.SUL.dll.licenses
+D:\Repositorios\SBIO0001-CMTTO\F - CMTTO_PORTAL\Codigo Fuente\Essbio.SUL\obj\dfsdfg\Essbio.SUL.dll

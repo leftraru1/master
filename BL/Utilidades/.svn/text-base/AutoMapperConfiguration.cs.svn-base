@@ -1,0 +1,65 @@
+﻿using AutoMapper;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BL.Utilidades
+{
+    public static class AutoMapperConfiguration
+    {
+
+        public static IMapper Configure()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+
+                cfg.CreateMap<Usuario, DTOUsuario>().ForMember(dto => dto.USU_PERF_ADMINISTRADOR, m => m.MapFrom(t => (t.Perfil != null) ? t.Perfil.PERF_ADMINISTRADOR : null))
+                                                    .ForMember(dto => dto.Sede, m => m.MapFrom(t => (t.Sede != null) ? t.Sede : null))
+                                                    .ForMember(dto => dto.Perfil, m => m.MapFrom(t => (t.Perfil != null) ? t.Perfil : null))
+                                                    ;
+                cfg.CreateMap<DTOUsuario, Usuario>();
+
+                cfg.CreateMap<DTOUsuario, DTOLogin>();
+                cfg.CreateMap<DTOLogin, DTOUsuario>();
+
+                cfg.CreateMap<Funcionalidad, DTOFuncionalidad>();
+                cfg.CreateMap<DTOFuncionalidad, Funcionalidad>();
+
+                cfg.CreateMap<PerfilFuncionalidad, DTOFuncionalidad>();
+                cfg.CreateMap<DTOFuncionalidad, PerfilFuncionalidad>();
+
+                cfg.CreateMap<Perfil, DTOPerfil>();
+                cfg.CreateMap<DTOPerfil, Perfil>();
+
+                cfg.CreateMap<Sede, DTOSede>();
+                cfg.CreateMap<DTOSede, Sede>();
+
+                cfg.CreateMap<Edificio, DTOEdificio>().ForMember(dto => dto.SED_NOMBRE, m => m.MapFrom(t => (t.Sede != null) ? t.Sede.SED_NOMBRE : ""));
+                cfg.CreateMap<DTOEdificio, Edificio>();
+
+                cfg.CreateMap<TipoServicio, DTOTipoServicio>();
+                cfg.CreateMap<DTOTipoServicio, TipoServicio>();
+
+                cfg.CreateMap<Servicio, DTOServicio>().ForMember(dto => dto.EDI_NOMBRE, m => m.MapFrom(t => (t.Edificio != null) ? t.Edificio.EDI_NOMBRE : null))
+                                                      .ForMember(dto => dto.TIP_NOMBRE, m => m.MapFrom(t => (t.TipoServicio != null) ? t.TipoServicio.TIP_NOMBRE : null))
+                                                      .ForMember(dto => dto.SED_NOMBRE, m => m.MapFrom(t => (t.Edificio.Sede.SED_NOMBRE != null) ? t.Edificio.Sede.SED_NOMBRE : null))
+                                                      .ForMember(dto => dto.Sede, m => m.MapFrom(t => (t.Edificio.Sede != null) ? t.Edificio.Sede : null));
+                cfg.CreateMap<DTOServicio, Servicio>();
+
+                cfg.CreateMap<Evaluacion, DTOEvaluacion>().ForMember(dto => dto.Edificio, m => m.MapFrom(t => (t.Servicio.Edificio != null) ? t.Servicio.Edificio : null))
+                                                          .ForMember(dto => dto.Sede, m => m.MapFrom(t => (t.Servicio.Edificio.Sede != null) ? t.Servicio.Edificio.Sede : null))
+                                                          .ForMember(dto => dto.TipoServicio, m => m.MapFrom(t => (t.Servicio.TipoServicio != null) ? t.Servicio.TipoServicio : null));
+                cfg.CreateMap<DTOEvaluacion, Evaluacion>();
+
+            });
+
+            return config.CreateMapper();
+
+        }
+
+    }
+}

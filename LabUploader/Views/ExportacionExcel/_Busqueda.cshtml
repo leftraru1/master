@@ -1,0 +1,100 @@
+﻿<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-download"></i> Exportar datos</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form id="FormTrabajador">
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="txtFechaInicio" class="control-label ">Fecha inicio</label>
+                        <div class="input-group dateRange to">
+                            <input type="text" from="txtFechaInicio" id="txtFechaInicio" name="txtFechaInicio" class="form-control input-sm dataFecha" maxlength="12">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="txtFechaFin" class="control-label ">Fecha fin</label>
+                        <div class="input-group dateRange to">
+                            <input type="text" from="txtFechaFin" id="txtFechaFin" name="txtFechaFin" class="form-control input-sm dataFecha" maxlength="12">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Sede</label>
+                        <select id="cmbSedeFiltro" name="cmbSedeFiltro" class="form-control input-sm"></select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Edificio</label>
+                        <select id="cmbEdificioFiltro" name="cmbEdificioFiltro" class="form-control input-sm"></select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Servicio</label>
+                        <select id="cmbServicioFiltro" name="cmbServicioFiltro" class="form-control input-sm"></select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Categoría servicio</label>
+                        <select id="cmbCategoriaFiltro" name="cmbCategoriaFiltro" class="form-control input-sm"></select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-md-offset-8">
+                <button id="btnBuscar" type="button" name="btnBuscar" class="btn btn-round btn-sm btn-primary btn-block ">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Buscar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnExportar" type="button" name="btnExportar" class="btn btn-round btn-sm btn-excel btn-block ">
+                    <i class="icono-personalizado excel-icon"></i>
+                    Exportar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default clearfix">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tbVotos" class="dataTableFull table table-condensed table-striped table-bordered nowrap display" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="hidden-lg hidden-md hidden-sm visible-xs firtscell"></th>
+                            <th>ID</th>
+                            <th>NOMBRE SERVICIO</th>
+                            <th>CATEGORÍA</th>
+                            <th>SEDE</th>
+                            <th>EDIFICIO</th>
+                            <th>FECHA REGISTRO</th>
+                            <th>EVALUACIÓN</th>
+                            <th>CÓDIGO REGISTRO</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

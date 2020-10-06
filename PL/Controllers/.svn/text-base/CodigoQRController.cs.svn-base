@@ -1,0 +1,86 @@
+﻿using System.Web.Mvc;
+using PL.Models;
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class CodigoQRController : Controller
+    {
+        // GET: CodigoQR
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        // GET: CodigoQR/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: CodigoQR/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: CodigoQR/Create
+        [HttpPost]
+        public ActionResult Create(FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: CodigoQR/Edit/5
+        public ActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        // POST: CodigoQR/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: CodigoQR/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: CodigoQR/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+    }
+}

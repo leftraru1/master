@@ -1,0 +1,259 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using BL.Modelos;
+using EL.DTO;
+using System.Net;
+using System.Threading.Tasks;
+using PL.Models;
+using System.Configuration;
+using ClosedXML.Excel;
+using System.IO;
+using System.Text;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Drawing;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class ExportacionExcelController : Controller
+    {
+        public MEvaluacion modelo { get; set; }
+        DTOSessionUsuario session = (DTOSessionUsuario)MSession.ReturnSessionObject();
+
+        public ExportacionExcelController()
+        {
+            modelo = new MEvaluacion();
+        }
+
+        // GET: ExportacionExcel
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        /*
+        // GET: ExportacionExcel/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: ExportacionExcel/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: ExportacionExcel/Create
+        [HttpPost]
+        public ActionResult Create(FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: ExportacionExcel/Edit/5
+        public ActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        // POST: ExportacionExcel/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: ExportacionExcel/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: ExportacionExcel/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+        */
+
+
+        [HttpPost]
+        public JsonResult BuscarEvaluaciones(DTOEvaluacion evaluacion)
+        {
+            List<DTOEvaluacion> evaluaciones = new List<DTOEvaluacion>();
+            try
+            {
+                if (session.Usuario.USU_PERF_ADMINISTRADOR == false)
+                    if (session.Usuario.USU_SED_ID_SEDE != null)
+                        evaluacion.Sede.SED_ID_SEDE = (int)session.Usuario.USU_SED_ID_SEDE;
+
+                evaluaciones = modelo.Buscar(evaluacion);
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = evaluaciones };
+        }
+
+        [HttpPost]
+        public JsonResult EvaluacionFiltrosArchivo(DTOEvaluacion evaluacion)
+        {
+            try
+            {
+                Session["ListaEvaluacionesExcel"] = evaluacion;
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new object[] { new object() } };
+        }
+
+        [HttpGet]
+        public ActionResult ListadoEvaluacionesToExcel()
+        {
+            try
+            {
+                DTOEvaluacion evaluacion = new DTOEvaluacion();
+
+                if (Session["ListaEvaluacionesExcel"] != null)
+                {
+                    evaluacion = (DTOEvaluacion)Session["ListaEvaluacionesExcel"];
+
+                    string Path = ConfigurationManager.AppSettings["PathReportes"];
+
+                    if (Path.Contains("~"))
+                        Path = Server.MapPath(Path);
+
+                    string fecha = DateTime.Now.Millisecond.ToString();
+                    string fileName = "ReporteEvaluaciones.xlsx";
+                    string filePath = Path + fileName;
+
+                    List<DTOEvaluacion> evaluaciones = new List<DTOEvaluacion>();
+                    evaluaciones = modelo.Buscar(evaluacion);
+
+                    var Wb = new XLWorkbook();
+                    var WS = Wb.Worksheets.Add("Votaciones");
+
+                    WS.Cell(1, 1).Value = "ID";
+                    WS.Cell(1, 2).Value = "NOMBRE SERVICIO";
+                    WS.Cell(1, 3).Value = "CATEGORÍA";
+                    WS.Cell(1, 4).Value = "SEDE";
+                    WS.Cell(1, 5).Value = "EDIFICIO";
+                    WS.Cell(1, 6).Value = "FECHA REGISTRO";
+                    WS.Cell(1, 7).Value = "EVALUACIÓN";
+                    WS.Cell(1, 8).Value = "CÓDIGO REGISTRO";
+                    WS.Cell(1, 9).Value = "IP";
+
+                    int col = 1;
+                    while (col <= 9)
+                    {
+                        WS.Cell(1, col).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        WS.Cell(1, col).Style.Font.Bold = true;
+                        WS.Cell(1, col).Style.Fill.SetBackgroundColor(XLColor.FromHtml("#286090"));
+                        WS.Cell(1, col).Style.Font.FontColor = XLColor.White;
+                        col++;
+                    }
+
+                    int r = 2;
+
+                    DateTime FECHA_REGISTRO;
+                    string FECHA;
+                    foreach (var item in evaluaciones)
+                    {         
+                        WS.Cell(r, 1).DataType = XLCellValues.Text;
+
+                        WS.Cell(r, 1).Value = item.EVA_ID_EVALUACION;
+                        WS.Cell(r, 2).Value = item.Servicio.SER_NOMBRE;
+                        WS.Cell(r, 3).Value = item.TipoServicio.TIP_NOMBRE;
+                        WS.Cell(r, 4).Value = item.Sede.SED_NOMBRE;
+                        WS.Cell(r, 5).Value = item.Edificio.EDI_NOMBRE;
+                        
+                        FECHA_REGISTRO = item.EVA_FECHA_HORA.GetValueOrDefault(DateTime.Now);
+                        FECHA = FECHA_REGISTRO.ToString("dd/MM/yyyy");
+                        WS.Cell(r, 6).Value = FECHA;
+                        WS.Cell(r, 6).DataType = XLCellValues.DateTime;
+
+                        WS.Cell(r, 7).Value = (item.EVA_NOTA == 1) ? "Mala" : ((item.EVA_NOTA == 2) ? "Regular" : ((item.EVA_NOTA == 3) ? "Buena" : ""));
+                        WS.Cell(r, 8).Value = item.EVA_REGISTRO;
+                        WS.Cell(r, 9).Value = item.EVA_IDENTIFICACION_DISPOSITIVO;
+
+                        r++;
+                    }
+
+                    WS.Columns().AdjustToContents();
+
+                    Wb.SaveAs(filePath);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                    Session["ListaEvaluacionesExcel"] = null;
+
+                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+                }
+
+                return View();
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult IntervaloFechas()
+        {
+            string intervalFechas = "30";
+            try
+            {
+                intervalFechas = System.Web.Configuration.WebConfigurationManager.AppSettings["intervalFechasExport"];
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = intervalFechas };
+        }
+
+    }
+}

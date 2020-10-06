@@ -1,0 +1,120 @@
+﻿using BL.Utilidades;
+using EL.DTO;
+using PL.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Configuration;
+using System.Web.Mvc;
+
+namespace PL.Controllers
+{
+    [AutorizeSession]
+    public class ImagenController : Controller
+    {
+        private string Ruta { get; set; }
+
+        public ImagenController()
+        {
+            Ruta = WebConfigurationManager.AppSettings["UploadIMG"];
+        }
+
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            Upload modelo = new Upload();
+
+            try
+            {               
+
+                for (int i = 0; i < Request.Files.Count; i++)
+                {
+                    HttpPostedFileBase file = Request.Files[i];
+                    string[] partes = file.FileName.Split('.');
+                    string ext = partes[partes.Length - 1];
+
+                    if (file.ContentLength <= 20971520)
+                    {
+                        if (modelo.validarExtensionFoto(ext))
+                        {
+                            string fileName = Guid.NewGuid().ToString() + "." + ext;
+                            modelo.Ruta = Url.Action("ImageStream", "Imagen", new { archivo = fileName });
+
+                            while (System.IO.File.Exists(modelo.Ruta))
+                            {
+                                fileName = Guid.NewGuid().ToString() + "." + ext;
+                                modelo.Ruta = Url.Action("ImageStream", "Imagen", new { archivo = fileName });
+                            }
+
+                            if (Ruta.Contains("~"))
+                                file.SaveAs(Server.MapPath(Ruta) + fileName); 
+                            else
+                                file.SaveAs(Ruta + fileName);
+
+                            modelo.Resultado = true;
+                            modelo.Mensaje = "ok";
+
+                            Response.StatusCode = (int)HttpStatusCode.OK;
+                        }
+                        else
+                        {
+                            Response.StatusCode = (int)HttpStatusCode.PreconditionFailed;
+                            Response.StatusDescription = "El archivo debe tener una extensión válida";
+                            modelo.Mensaje = "El archivo debe tener una extensión válida";
+                        }
+                    }
+                    else
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.PreconditionFailed;
+                        Response.StatusDescription = "El archivo debe pesar menos de 20MB";
+                        modelo.Mensaje = "El archivo debe pesar menos de 20MB";
+                    }
+
+                }                
+
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message;
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = modelo };
+        }
+
+        [HttpGet]
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
+        public FileStreamResult ImageStream(string archivo)
+        {
+            /*
+            var e = Path.GetExtension(archivo);
+            FileStream fs;
+            if (Ruta.Contains("~"))
+                fs = new FileStream(Server.MapPath(Ruta + archivo), FileMode.Open, FileAccess.Read, FileShare.Read);
+            else
+                fs = new FileStream(Ruta + archivo, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            return new FileStreamResult(fs, "image/" + e);
+            */
+
+            var e = Path.GetExtension(archivo);
+            FileStream fs;
+            string path_file = string.Empty;
+            if (Ruta.Contains("~"))
+                path_file = Server.MapPath(Ruta + archivo);
+            else
+                path_file = Ruta + archivo;
+
+            if (System.IO.File.Exists(path_file) == false)
+                path_file = Server.MapPath(WebConfigurationManager.AppSettings["DefaultPathFileUser"]);
+
+            fs = new FileStream(path_file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return new FileStreamResult(fs, "image/" + e);
+
+        }
+
+    }
+}

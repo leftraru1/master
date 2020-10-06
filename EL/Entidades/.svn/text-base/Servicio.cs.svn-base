@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.Entidades
+{
+    [Table("SESC_SERVICIO")]
+    public class Servicio
+    {
+        [Key]
+        public int SER_ID_SERVICIO { get; set; }
+        
+        [Required]
+        [MaxLength(100)]
+        public string SER_NOMBRE { get; set; }
+        
+        [MaxLength(200)]
+        public string SER_URL { get; set; }
+        
+        public bool? SER_VIGENTE { get; set; }
+        
+        [Required]
+        [DataType(DataType.Time)]
+        public DateTime SER_FECHA_CREACION { get; set; }
+
+        [DataType(DataType.Time)]
+        public DateTime? SER_FECHA_ACTUALIZACION { get; set; }
+
+        //public int EDI_ID_EDIFICIO { get; set; }
+        public int SER_EDI_ID_EDIFICIO { get; set; }
+        [ForeignKey("SER_EDI_ID_EDIFICIO")]
+        public Edificio Edificio { get; set; }
+
+        //public int TIP_ID_TIPO_SERVICIO { get; set; }
+        public int SER_TIP_ID_TIPO_SERVICIO { get; set; }
+        [ForeignKey("SER_TIP_ID_TIPO_SERVICIO")]
+        public TipoServicio TipoServicio { get; set; }
+
+        //public int USU_ID { get; set; }
+        public int SER_USU_ID_USUARIO { get; set; }
+        [ForeignKey("SER_USU_ID_USUARIO")]
+        public Usuario Usuario { get; set; }
+
+    }
+}

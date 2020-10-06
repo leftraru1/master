@@ -1,0 +1,20 @@
+﻿<header id="header" class="row">
+    <div  class="col-md-4">
+        @*<img id="logo-essbio" src="~/Content/img/app/logo-essbio.png"  height="90" width="240" />*@
+    </div>
+    <div id="text-header-title" class="col-md-8 col-md-offset-1 hidden-xs hidden-sm">
+        Sistema de Fimas - Módulo File Uploader
+    </div>
+    <section id="top-right">
+        @if (@Model is HelperResult)
+        {
+            @Model
+        }
+        else
+        {
+            <div class="pull-right-full">
+                @Html.Partial("_TopRight")
+            </div>
+        }
+    </section>
+</header>

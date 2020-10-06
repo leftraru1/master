@@ -1,0 +1,13 @@
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\GenKeys.exe
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\GenKeys.pdb
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\BL.dll
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\EL.dll
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\Renci.SshNet.dll
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\BL.pdb
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\bin\Debug\EL.pdb
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\obj\x86\Debug\GenKeys.csprojResolveAssemblyReference.cache
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\obj\x86\Debug\GenKeys.GenKey.resources
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\obj\x86\Debug\GenKeys.Properties.Resources.resources
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\obj\x86\Debug\GenKeys.csproj.GenerateResource.Cache
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\obj\x86\Debug\GenKeys.exe
+C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\GenKeys\obj\x86\Debug\GenKeys.pdb

@@ -1,0 +1,29 @@
+﻿@model int?
+@section estilos{
+    @Styles.Render("~/content/evaluacion")
+}
+
+    
+      
+           
+
+
+                @Html.Partial("_HeaderEvaluacion")
+
+
+                <div id="content">
+					<h1 class="dialogo_data"><strong>Evalua el Servicio de/</strong><label id="txt_servicio"></label>/<label id="txt_lugar"></label>/<label id="txt_edificio"></label></h1>
+                   
+
+                        @*<div class="cod-pantalla"> </div>*@
+                    </div>
+               
+
+       
+
+        <div class="cod-pantalla"></div>
+    
+
+@section scripts{
+    @Scripts.Render("~/js/evaluacion")
+}

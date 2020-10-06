@@ -1,0 +1,97 @@
+﻿@using EL.DTO;
+@using BL.Modelos;
+@{
+    Response.Buffer = true;
+    DTOSessionUsuario sess = new DTOSessionUsuario();
+    DTOUsuario user = new DTOUsuario();
+    List<DTOFuncionalidad> padres = new List<DTOFuncionalidad>();
+    List<DTOFuncionalidad> hijos = new List<DTOFuncionalidad>();
+    if (MSession.CheckSession())
+    {
+        sess = (DTOSessionUsuario)MSession.ReturnSessionObject();
+        user = sess.Usuario;
+        padres = sess.Funcionalidades.FindAll(x => x.FUN_PADRE_ID == null).OrderBy(x => x.FUN_ORDEN).ToList();
+    }
+}
+
+<aside id="left-panel">
+    <nav>
+        
+        <ul>
+                @foreach (var item in padres)
+                {
+                    hijos = sess.Funcionalidades.FindAll(x => x.FUN_PADRE_ID == item.FUN_ID).OrderBy(x => x.FUN_ORDEN).ToList();
+
+                    string ruta = (string.IsNullOrWhiteSpace(item.FUN_ACTION) && string.IsNullOrWhiteSpace(item.FUN_CONTROLLER)) ? "#" : Url.Action(item.FUN_ACTION, item.FUN_CONTROLLER);
+
+                    <li class="@Html.RouteIf(@item.FUN_NOMBRE, "active")">
+                        <a href="@ruta" title="@item.FUN_NOMBRE"><i class="fa fa-lg fa-fw @item.FUN_CLASE"></i> <span class="menu-item-parent">@item.FUN_NOMBRE</span></a>
+                        @{
+                            if (hijos.Count > 0)
+                            {
+                                <ul>
+                                    @foreach (var hijo in hijos)
+                                    {
+                                        string rutaHijo = (string.IsNullOrWhiteSpace(hijo.FUN_ACTION) && string.IsNullOrWhiteSpace(hijo.FUN_CONTROLLER)) ? "#" : Url.Action(hijo.FUN_ACTION, hijo.FUN_CONTROLLER);
+                                        <li class="@Html.RouteIf(@hijo.FUN_NOMBRE, "active")">
+                                            <a href="@rutaHijo" ti title="@hijo.FUN_NOMBRE"><i class="fa fa-lg fa-fw @hijo.FUN_CLASE"></i> <span>@hijo.FUN_NOMBRE</span></a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        }
+                    </li>
+                }
+        </ul>
+
+        @*<ul>
+
+            <li class="@Html.RouteIf("home", "active")">
+                <a href="@Url.Action("index", "home")" title="home"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Home</span></a>
+            </li>
+
+            <li class="@Html.RouteIf("Ubicaciones", "active")">
+                <a href="@Url.Action("index", "Ubicacion")" title="Ubicaciones"><i class="fa fa-lg fa-fw fa-map-marker"></i> <span class="menu-item-parent">Ubicaciones</span></a>
+            </li>
+
+            <li class="@Html.RouteIf("Sedes", "active")">
+                <a href="@Url.Action("index", "Sede")" title="Sedes"><i class="fa fa-lg fa-fw fa-institution"></i> <span class="menu-item-parent">Sedes</span></a>
+            </li>
+
+            <li class="@Html.RouteIf("Servicios", "active")">
+                <a href="@Url.Action("index", "Servicio")" title="Sedes"><i class="fa fa-lg fa-fw fa-bell"></i> <span class="menu-item-parent">Servicios</span></a>
+            </li>
+
+            <li class="@Html.RouteIf("Exportar datos", "active")">
+                <a href="@Url.Action("index", "Voto")" title="Sedes"><i class="fa fa-lg fa-fw fa-download"></i> <span class="menu-item-parent">Exportar datos</span></a>
+            </li>
+
+            <li class="@Html.RouteIf("Administracion", "active")">
+                <a href="#" title="Administración"><i class="fa fa-lg fa-fw fa-th-list"></i> <span class="menu-item-parent">Administración</span></a>
+                <ul>
+                    <li class="@Html.RouteIf("Trabajador", "active")">
+                        <a href="@Url.Action("index", "Trabajador")" title="Trabajador"><i class="fa fa-lg fa-fw fa-users"></i> <span>Trabajadores</span></a>
+                    </li>
+                    <li class="@Html.RouteIf("Usuario", "active")">
+                        <a href="@Url.Action("index", "Usuario")" ti title="Usuario"><i class="fa fa-lg fa-fw fa-male"></i> <span>Usuario</span></a>
+                    </li>
+                    <li class="@Html.RouteIf("Perfil", "active")">
+                        <a href="@Url.Action("index", "Perfil")" ti title="Perfil"><i class="fa fa-lg fa-fw fa-unlock-alt"></i> <span>Perfil</span></a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="@Html.RouteIf("Evaluacion servicio", "active")">
+                <a href="@Url.Action("index", "Evaluacion")" title="Sedes"><i class="fa fa-lg fa-fw fa-check"></i> <span class="menu-item-parent">Evaluación de servicio</span></a>
+            </li>
+
+        </ul>*@
+
+    </nav>
+
+    @*<span class="minifyme" data-action="minifyMenu">
+            <i class="fa fa-arrow-circle-left hit"></i>
+        </span>*@
+
+</aside>
+<!-- END NAVIGATION -->

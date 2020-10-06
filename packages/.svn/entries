@@ -1,0 +1,233 @@
+10
+
+dir
+316
+svn://10.40.190.25/AIEP-Caritas/Sistema/Fuentes/Sitio%20Web/desarrollo/packages
+svn://10.40.190.25/AIEP-Caritas
+
+
+
+2018-10-03T12:08:56.141875Z
+79
+ralmendras
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+bad46e1f-72c4-b144-846d-bb2e06406f88
+
+AutoMapper.6.2.2
+dir
+
+Antlr.3.5.0.2
+dir
+
+DocumentFormat.OpenXml.dll
+file
+
+
+
+
+2018-09-28T14:07:11.144347Z
+98a3a77db3419155418dc64b4335d2a7
+2018-09-28T13:44:18.751250Z
+43
+ralmendras
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5697312
+
+Microsoft.Owin.Security.2.1.0
+dir
+
+Newtonsoft.Json.6.0.5
+dir
+
+iTextSharp.5.5.13
+dir
+
+Microsoft.AspNet.Mvc.5.2.2
+dir
+
+Microsoft.AspNet.Razor.3.0.0
+dir
+
+Microsoft.Web.Infrastructure.1.0.0.0
+dir
+
+Microsoft.AspNet.WebPages.3.2.2
+dir
+
+Microsoft.AspNet.Razor.3.2.2
+dir
+
+EntityFramework.6.1.0
+dir
+
+repositories.config
+file
+
+
+
+
+2018-09-28T14:07:11.151833Z
+5b675265c86eee81386c96f2e0cc7037
+2018-09-28T13:44:18.751250Z
+43
+ralmendras
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+314
+
+Microsoft.AspNet.Web.Optimization.1.1.3
+dir
+
+Microsoft.AspNet.Identity.Owin.2.2.1
+dir
+
+QRCoder.1.3.3
+dir
+
+RazorEngine.3.10.0
+dir
+
+Microsoft.Owin.Security.OAuth.2.1.0
+dir
+
+ClosedXML.dll
+file
+
+
+
+
+2018-09-28T14:07:11.617967Z
+0b63d936bd6815eb82842c3c1c2a6b6d
+2018-09-28T13:44:18.751250Z
+43
+ralmendras
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+925184
+
+WebGrease.1.6.0
+dir
+
+FastMember.Signed.dll
+file
+
+
+
+
+2018-09-28T14:07:11.657892Z
+5ce833aa0ec82cccf656cb666d38005e
+2018-09-28T13:44:18.751250Z
+43
+ralmendras
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+23040
+
+Owin.1.0
+dir
+
+Microsoft.AspNet.Identity.EntityFramework.2.1.0
+dir
+
+Microsoft.AspNet.Identity.Core.2.2.1
+dir
+
+itextsharp.xmlworker.5.5.13
+dir
+
+Microsoft.Owin.2.1.0
+dir
+
+Microsoft.Owin.Security.Cookies.2.1.0
+dir
+

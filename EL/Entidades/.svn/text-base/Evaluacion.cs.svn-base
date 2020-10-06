@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.Entidades
+{
+    [Table("SESC_EVALUACION")]
+    public class Evaluacion
+    {
+
+        [Key]
+        public int EVA_ID_EVALUACION { get; set; }
+        [Required]
+        public int EVA_SER_ID_SERVICIO { get; set; }
+        [Required]
+        public DateTime EVA_FECHA_HORA { get; set; }
+        [Required]
+        public int EVA_REGISTRO { get; set; }
+        [Required]
+        public string EVA_IDENTIFICACION_DISPOSITIVO { get; set; }
+        [Required]
+        public int EVA_NOTA { get; set; }
+
+        [ForeignKey("EVA_SER_ID_SERVICIO")]
+        public Servicio Servicio { get; set; }
+
+    }
+}

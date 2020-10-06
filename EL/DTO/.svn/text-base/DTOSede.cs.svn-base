@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.DTO
+{
+    public class DTOSede
+    {
+        public DTOSede()
+        {
+         
+        }
+
+        public int SED_ID_SEDE { get; set; }
+        [MaxLength(30)]
+        public string SED_CODIGO { get; set; }
+        [MaxLength(100)]
+        public string SED_NOMBRE { get; set; }
+
+    }
+}

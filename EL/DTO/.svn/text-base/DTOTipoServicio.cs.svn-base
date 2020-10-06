@@ -1,0 +1,19 @@
+﻿using System;
+namespace EL.DTO
+{
+    public class DTOTipoServicio
+    {
+        public int TIP_ID_TIPO_SERVICIO { get; set; }
+
+        public string TIP_NOMBRE { get; set; }
+
+        public bool TIP_VIGENTE { get; set; }
+
+        public DateTime TIP_FECHA_CREACION { get; set; }
+
+        public DateTime TIP_FECHA_ACTUALIZACION { get; set; }
+
+        public int TIP_USU_ID_USUARIO { get; set; }
+
+    }
+}

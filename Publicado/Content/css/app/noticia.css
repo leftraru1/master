@@ -1,0 +1,49 @@
+﻿.img-destacada {
+    padding-top: 2px;
+}
+
+.upload-img-destacada {
+    cursor: pointer;
+    border: 3px solid white;
+    background-image: url(../../img/not-available-es.png);
+    height: 160px;
+    width: 100%;
+    background-repeat: round !important;
+    background-size: cover !important;
+}
+
+    .upload-img-destacada:hover {
+        -webkit-box-shadow: 0px 3px 7px 0px rgba(173, 173, 173, 0.5);
+        -moz-box-shadow: 0px 3px 7px 0px rgba(173, 173, 173, 0.5);
+        box-shadow: 0px 3px 7px 0px rgba(173, 173, 173, 0.5);
+    }
+
+.dimencionesDestacada {
+    width: 180px;
+    height: 160px;
+}
+
+.imagen-muestra {
+    height: 60px;
+}
+
+.caption {
+    height: 330px;
+}
+
+#txt_resumen {
+    height: 155px;
+    top: 3px;
+}
+
+#summernote{
+    height: 400px;
+}
+
+#pagination{
+    float: right;
+}
+
+.validation-error{
+    border: 1px solid #b94a48;
+}

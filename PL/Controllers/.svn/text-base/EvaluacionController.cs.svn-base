@@ -1,0 +1,164 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using EL.DTO;
+using BL.Modelos;
+using System.Threading.Tasks;
+using System.Net;
+using BL.Utilidades;
+namespace PL.Controllers
+{
+    public class EvaluacionController : Controller
+    {
+        private BL.Utilidades.DESEncrypt encriptacion { get; set; }
+        private static MEvaluacion modelo { get; set; }
+        DTOSessionUsuario session = (DTOSessionUsuario)MSession.ReturnSessionObject();
+
+        // GET: Evaluacion
+        public EvaluacionController()
+        {
+            encriptacion = new BL.Utilidades.DESEncrypt();
+            modelo = new MEvaluacion();
+        }
+
+        public ActionResult Index()
+        {
+
+            var requestContext = ((MvcHandler)System.Web.HttpContext.Current.Handler).RequestContext;
+
+
+            string Base = requestContext.HttpContext.Request.Url.Authority.ToString() + requestContext.HttpContext.Request.Url.AbsolutePath.ToString() + "?";
+
+            string checklist = Request.Url.Query;//requestContext.HttpContext.Request.QueryString.ToString();
+            string desencriptar = encriptacion.DesencriptarCadenaDeCaracteres(checklist.Remove(0, 1));
+
+            string urldesencriptada = Base + "" + desencriptar;
+
+            int id = int.Parse(GetQueryString(urldesencriptada, "id_servicio"));
+
+            return View(id);
+        }
+
+        string GetQueryString(string url, string key)
+        {
+            string query_string = string.Empty;
+
+            UriBuilder uri = new UriBuilder(url);
+            var newQueryString = HttpUtility.ParseQueryString(uri.Query);
+            query_string = newQueryString[key].ToString();
+
+            return query_string;
+        }
+
+        [HttpPost]
+        public JsonResult Buscar(DTOServicio entidad)
+        {
+            DTOServicio servicio = new DTOServicio();
+            try
+            {
+                if (entidad == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "Datos inconsistentes";
+                }
+                else
+                    if (ModelState.IsValid)
+                    {
+
+                        servicio = modelo.Buscar(entidad);
+                        Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.StatusDescription = "Datos inválidos : " + errors;
+                    }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = servicio };
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Guardar(DTOEvaluacion entidad)
+        {
+
+            DTORespuesta respuesta = new DTORespuesta();
+            //entidad.EVA_IDENTIFICACION_DISPOSITIVO = BL.Utilidades.Util.GetIpServer();
+            entidad.EVA_FECHA_HORA = DateTime.Now;
+            entidad.EVA_REGISTRO = 10000;
+            try
+            {
+                if (entidad == null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "Datos inconsistentes";
+                }
+                else
+                    if (ModelState.IsValid)
+                    {
+
+                        respuesta = await modelo.Guardar(entidad);
+                        Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.StatusDescription = "Datos inválidos : " + errors;
+                    }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+
+        public struct ST_RESPUESTA {
+            public string IP_CLIENTE;
+            public string IP_SERVER;
+        }
+
+        [HttpPost]
+        public JsonResult GetClientIP()
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            ST_RESPUESTA ST_RESP = new ST_RESPUESTA();
+
+            try
+            {
+                Response.StatusCode = (int)HttpStatusCode.OK;              
+                respuesta.Resultado = true;
+                ST_RESP.IP_CLIENTE = Request.ServerVariables["REMOTE_ADDR"];
+                ST_RESP.IP_SERVER = Request.ServerVariables["LOCAL_ADDR"];
+                respuesta.Elemento = ST_RESP;       
+            }
+            catch (Exception ex)
+            {
+                respuesta.Resultado = false;
+                respuesta.Mensaje = ex.Message;
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = ex.Message.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\v", "").Replace("\f", "").ToString();
+            }
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = respuesta };
+        }
+
+    }
+}

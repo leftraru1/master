@@ -1,0 +1,137 @@
+﻿using AutoMapper;
+using DAL;
+using EL.DTO;
+using EL.Entidades;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace BL.Modelos
+{
+    public class MLogin
+    {
+        private static UnitOfWork unitOfWork { get; set; }
+        private static IMapper mapper { get; set; }
+
+        public MLogin()
+        {
+            unitOfWork = new UnitOfWork((DTOSessionUsuario)MSession.ReturnSessionObject());
+            mapper = BL.Utilidades.AutoMapperConfiguration.Configure();
+        }
+
+        public async Task<DTOUsuario> UpdateUsuario(DTOUsuario entidad)
+        {
+            Usuario Usuario = new Usuario();
+            Usuario = unitOfWork.UsuarioRepo.GetAll(t => t.USU_ID_USUARIO == entidad.USU_ID_USUARIO, includeProperties: "Perfil, Sede").FirstOrDefault();
+
+            if (Usuario.USU_NOMBRE_COMPLETO == null)
+            {
+                mapper.Map<DTOUsuario, Usuario>(entidad, Usuario);
+                unitOfWork.UsuarioRepo.Update(Usuario);
+
+                await unitOfWork.Save();
+
+                entidad.USU_ID_USUARIO = Usuario.USU_ID_USUARIO;
+                Usuario = unitOfWork.UsuarioRepo.GetAll(t => t.USU_ID_USUARIO == entidad.USU_ID_USUARIO, includeProperties: "Perfil, Sede").FirstOrDefault();
+                mapper.Map<Usuario, DTOUsuario>(Usuario, entidad);
+            }
+
+            return entidad;
+        }
+
+
+        private bool ValidaAdmin(DTOLogin login)
+        {
+            string ADMIN_USER = System.Web.Configuration.WebConfigurationManager.AppSettings["AdminUser"];
+            string ADMIN_PASS = System.Web.Configuration.WebConfigurationManager.AppSettings["AdminPass"];
+
+            if (login.USU_USERNAME == ADMIN_USER && login.USU_PASS == ADMIN_PASS)
+                return true;
+            else
+                return false;
+
+        }
+
+        public DTORespuesta ValidaLogin(DTOLogin login)
+        {
+            DTORespuesta respuesta = new DTORespuesta();
+            try
+            {
+                if (ValidaAdmin(login) == false)
+                {
+                    WSLogin.LoginClassIn oEntrada = new WSLogin.LoginClassIn();
+                    WSLogin.LoginClassOut oSalida = new WSLogin.LoginClassOut();
+                    WSLogin.LoginClient Login = new WSLogin.LoginClient();
+
+                    oEntrada.usuario = login.USU_USERNAME;
+                    oEntrada.password = login.USU_PASS;
+
+                    Login.Open();
+                    oSalida = Login.ValidarCredenciales(oEntrada);
+
+                    if (oSalida.status == "OK")
+                    {
+                        int rut = (int)oSalida.detalle.rut;
+                        DTOUsuario usuario = new DTOUsuario();
+                        Usuario dato = unitOfWork.UsuarioRepo.GetAll(t => t.USU_RUT == rut && t.USU_VIGENTE == true && t.Perfil.PERF_VIGENCIA == true
+                                                                    , includeProperties: "Perfil, Sede").FirstOrDefault();
+                        if (dato != null)
+                            usuario = mapper.Map<Usuario, DTOUsuario>(dato);
+
+                        if (usuario.USU_ID_USUARIO > 0)
+                        {
+                            usuario.USU_NOMBRE_COMPLETO = oSalida.detalle.nombre_completo;
+
+                            respuesta.Resultado = true;
+                            respuesta.Elemento = usuario;
+                        }
+                        else
+                        {
+                            respuesta.Resultado = false;
+                            respuesta.Mensaje = "La cuenta de usuario esta no vigente, comuníquese con el administrador del sistema";
+                        }
+
+                    }
+                    else
+                    {
+                        respuesta.Resultado = false;
+                        respuesta.Mensaje = "Las credenciales ingresadas no son correctas, reingrese nuevamente";
+                    }
+
+                    Login.Close();
+                }
+                else
+                {
+                    int rut = int.Parse(System.Web.Configuration.WebConfigurationManager.AppSettings["AdminRUT"]);
+                    DTOUsuario usuario = new DTOUsuario();
+                    Usuario dato = unitOfWork.UsuarioRepo.GetAll(t => t.USU_RUT == rut && t.USU_VIGENTE == true, includeProperties: "Perfil, Sede").FirstOrDefault();
+
+                    if (dato != null)
+                        usuario = mapper.Map<Usuario, DTOUsuario>(dato);
+
+                    if (usuario.USU_ID_USUARIO > 0)
+                    {
+                        respuesta.Resultado = true;
+                        respuesta.Elemento = usuario;
+                    }
+                    else
+                    {
+                        respuesta.Resultado = false;
+                        respuesta.Mensaje = "La cuenta de usuario esta no vigente, comuníquese con el administrador del sistema";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return respuesta;
+        }
+
+    }
+}

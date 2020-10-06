@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.Entidades
+{
+    [Table("SESC_SEDE")]
+    public class Sede
+    {
+        [Key]
+        public int SED_ID_SEDE { get; set; }
+
+        [Required]
+        [MaxLength(30)]
+        public string SED_CODIGO { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string SED_NOMBRE { get; set; }
+
+        public IList<Edificio> Edificios { get; set; }
+        public IList<Usuario> Usuarios { get; set; }
+
+    }
+}

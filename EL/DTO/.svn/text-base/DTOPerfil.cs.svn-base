@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.DTO
+{
+    public class DTOPerfil
+    {
+
+        public int PERF_ID { get; set; }
+        [MaxLength(35)]
+        public string PERF_NOMBRE { get; set; }
+        [MaxLength(500)]
+        public string PERF_DESCRIPCION { get; set; }
+        public bool PERF_VIGENCIA { get; set; }
+        public bool? PERF_ADMINISTRADOR { get; set; }
+
+        public List<DTOFuncionalidad> Funciones { get; set; }
+    }
+}

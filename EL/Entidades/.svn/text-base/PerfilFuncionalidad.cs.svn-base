@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EL.Entidades
+{
+    [Table("SESC_PERFIL_FUNCION")]
+    public class PerfilFuncionalidad
+    {
+
+        [Key, Column(Order = 0)]
+        public int FUN_ID { get; set; }
+        [Key, Column(Order = 1)]
+        public int PERF_ID { get; set; }
+
+        [ForeignKey("FUN_ID")]
+        public Funcionalidad Funcionalidad { get; set; }
+
+        [ForeignKey("PERF_ID")]
+        public Perfil Perfil { get; set; }
+
+    }
+}

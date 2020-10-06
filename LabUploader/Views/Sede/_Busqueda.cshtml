@@ -1,0 +1,77 @@
+﻿<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-institution"></i> Sedes</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label " for="txtNombres">Código</label>
+                    <input type="text" id="txtNombres" name="txtNombres" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="50">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label " for="txtNombres">Nombre</label>
+                    <input type="text" id="txtNombres" name="txtNombres" class="form-control input-sm input-outer-trim habilitadoModifica" maxlength="50">
+                </div>
+            </div>
+            @*<div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Ubicación</label>
+                    <select id="cmbUbicacionFiltro" name="cmbUbicacionFiltro" class="form-control input-sm"></select>
+                </div>
+            </div>*@
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label " for="txtNombres">Estado</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="radio" name="gender" value="male"> Activo
+                    </div>
+                    <div class="col-md-6">
+                        <input type="radio" name="gender" value="male"> Inactivo
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="row">          
+            <div class="col-xs-12 col-md-2 col-md-offset-8">
+                <button id="btnBuscar" type="button" name="btnBuscar" class="btn btn-round btn-sm btn-primary btn-block ">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Buscar
+                </button>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <button id="btnNuevo" type="button" name="btnNuevo" class="btn btn-round btn-sm btn-primary btn-block ">
+                    <i class="fa fa-lg fa-fw fa-plus"></i>
+                    Nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default clearfix">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tbSedes" class="dataTableFull table table-condensed table-striped table-bordered nowrap display" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="hidden-lg hidden-md hidden-sm visible-xs firtscell"></th>
+                            <th></th>
+                            <th></th>
+                            <th>CÓDIGO</th>
+                            <th>NOMBRE SEDE</th>
+                            @*<th>UBICACIÓN</th>*@
+                            <th>FECHA CREACIÓN</th>
+                            <th>FECHA MODIFICACIÓN</th>
+                            <th>ESTADO</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+﻿<div id="content">
+    <div id="pnlBusqueda" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        @Html.Partial("_Busqueda")
+    </div>
+    <div id="pnlRegistro" class="ocultar">
+        @Html.Partial("_Registro")
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/js/sede")
+}

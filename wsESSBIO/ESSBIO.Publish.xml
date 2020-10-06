@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="C:\Users\Administrador\Documents\ESSBIO\Servicio WEB\ESSBIO\ServicioWebEssbio\Publicaciones" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Perfil1" publishMethod="FileSystem" replaceMatchingFiles="False" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="bin/EL.pdb" publishTime="09/05/2018 09:21:32" />
+    <file relUrl="wsESSBIO.asmx" publishTime="08/31/2018 16:43:38" />
+    <file relUrl="bin/Renci.SshNet.dll" publishTime="10/16/2017 20:53:04" />
+    <file relUrl="bin/BL.dll" publishTime="09/05/2018 09:21:33" />
+    <file relUrl="Web.config" publishTime="09/05/2018 09:21:34" />
+    <file relUrl="bin/ESSBIO.pdb" publishTime="09/05/2018 09:21:33" />
+    <file relUrl="bin/EL.dll" publishTime="09/05/2018 09:21:33" />
+    <file relUrl="bin/BL.pdb" publishTime="09/05/2018 09:21:33" />
+    <file relUrl="bin/ESSBIO.dll" publishTime="09/05/2018 09:21:33" />
+  </publishProfile>
+</publishData>
